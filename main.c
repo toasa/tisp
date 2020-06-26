@@ -13,6 +13,17 @@ struct Cell {
     int val; // Kind が NUMBER の場合に使う
 };
 
+enum TokenKind {
+    TK_NUM,
+    TK_EOF,
+};
+
+struct Token {
+    enum TokenKind kind;
+    int val;
+    struct Token *next;
+};
+
 struct Cell *new_cell(enum Kind kind) {
     struct Cell *c = calloc(1, sizeof(struct Cell));
     c->kind = kind;
@@ -25,19 +36,59 @@ struct Cell *new_num_cell(int val) {
     return c;
 }
 
+struct Token *new_token(struct Token *prev, enum TokenKind kind) {
+    struct Token *t = calloc(1, sizeof(struct Token));
+    t->kind = kind;
+    prev->next = t;
+    return t;
+}
+
+struct Token *new_num_token(struct Token *prev, int val) {
+    struct Token *t = new_token(prev, TK_NUM);
+    t->val = val;
+    return t;
+}
+
 bool is_integer(char c) {
     return ('0' <= c) && (c <= '9');
 }
 
-int read_integer() {
-    char *n_i = input;
-    int n = 0;
-    while (is_integer(*n_i)) {
-        n = 10 * n + (*n_i - '0');
-        n_i++;
+struct Token *tokenize() {
+    struct Token head;
+    struct Token *cur = calloc(1, sizeof(struct Token));
+    head.next = cur;
+
+    int i = 0;
+    while (input[i] != '\0') {
+        if (is_integer(input[i])) {
+            int n = 0;
+            do {
+                n = 10 * n + (input[i] - '0');
+                i++;
+            } while (is_integer(input[i]));
+            cur = new_num_token(cur, n);
+            continue;
+        } else if (input[i] == ' ') {
+            // skip
+        }
+        i++;
     }
 
-    return n;
+    cur = new_token(cur, TK_EOF);
+    return head.next->next;
+}
+
+struct Cell *gen_cells(struct Token *tokens) {
+    struct Token *token = tokens;
+
+    struct Cell *cur;
+    while (token->kind != TK_EOF) {
+        if (token->kind == TK_NUM) {
+            cur = new_num_cell(token->val);
+        }
+        token = token->next;
+    }
+    return cur;
 }
 
 struct Cell *read() {
@@ -49,9 +100,8 @@ struct Cell *read() {
     }
 
     fgets(input, 1024, stdin);
-
-    int num = read_integer();
-    return new_num_cell(num);
+    struct Token *tokens = tokenize();
+    return gen_cells(tokens);
 }
 
 struct Cell *eval(struct Cell *c) {

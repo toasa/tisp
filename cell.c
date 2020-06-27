@@ -18,6 +18,13 @@ void next_token() {
     token = token->next;
 }
 
+void expect(enum TokenKind tk) {
+    if (token->kind != tk) {
+        error("expect %d but got %d\n", tk, token->kind);
+    }
+    next_token();
+}
+
 struct Cell *gen_list_cells() {
     struct Cell head_c;
     struct Cell *cur = calloc(1, sizeof(struct Cell));
@@ -36,10 +43,7 @@ struct Cell *gen_list_cells() {
         cur = new;
     }
 
-    // TODO: expect
-    if (token->kind == TK_RPARENT) {
-        next_token();
-    }
+    expect(TK_RPARENT);
 
     head_c.next->next->is_head = true;
     return head_c.next->next;

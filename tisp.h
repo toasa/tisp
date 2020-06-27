@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdarg.h>
 
 // token.c
 enum TokenKind {
@@ -38,3 +39,5 @@ struct Cell *gen_cells(struct Token *tokens);
 
 // util.c
 bool is_integer(char c);
+void assert(int result, char *fmt, ...);
+void error(char *fmt, ...);

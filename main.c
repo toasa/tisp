@@ -19,8 +19,32 @@ struct Cell *eval(struct Cell *c) {
     return c;
 }
 
+void print_list(struct Cell *c) {
+    printf("(");
+    for (struct Cell *c_i = c; c_i != NULL; c_i = c_i->next) {
+        if (c_i->kind == CK_NUM) {
+            if (c_i->next == NULL) {
+                printf("%d", c_i->val);
+            } else {
+                printf("%d ", c_i->val);
+            }
+        } else if (c_i->kind == CK_PRONG) {
+            print_list(c_i->data);
+            if (c_i->next != NULL) {
+                printf(" ");
+            }
+        }
+    }
+    printf(")");
+}
+
 void print(struct Cell *c) {
-    printf("%d\n", c->val);
+    if (c->is_head) {
+        print_list(c);
+        printf("\n");
+    } else {
+        printf("%d\n", c->val);
+    }
 }
 
 int main() {

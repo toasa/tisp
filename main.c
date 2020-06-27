@@ -15,6 +15,11 @@ struct Cell *read() {
     return gen_cells(tokens);
 }
 
+struct Cell *read_from_stdin(char *input) {
+    struct Token *tokens = tokenize(input);
+    return gen_cells(tokens);
+}
+
 struct Cell *eval(struct Cell *c) {
     return c;
 }
@@ -47,10 +52,21 @@ void print(struct Cell *c) {
     }
 }
 
-int main() {
+void repl() {
     while (1) {
         struct Cell *c = read();
         c = eval(c);
         print(c);
+    }
+}
+
+int main(int argc, char **argv) {
+    if (argc == 2) {
+        // for unittest
+        struct Cell *c = read_from_stdin(argv[1]);
+        c = eval(c);
+        print(c);
+    } else {
+        repl();
     }
 }

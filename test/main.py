@@ -1,0 +1,47 @@
+import unittest
+import os
+from test import support
+
+class TestRun(unittest.TestCase):
+    OUTPUT_PATH = "test/tmp.txt"
+
+    def exe(self, arg):
+        os.system("./main \"{0}\" > {1}".format(arg, self.OUTPUT_PATH))
+
+    def do_tests(self, tests):
+        f = open(self.OUTPUT_PATH)
+
+        for test in tests:
+            input_ = test[0]
+            expected = test[1]
+
+            self.exe(input_);
+
+            actual = f.read()
+            self.assertEqual(actual, expected);
+            f.seek(0, 0)
+
+        f.close()
+
+
+    def test_num(self):
+        tests = [ 
+                    ["2", "2\n"],
+                    ["30  ", "30\n"],
+                    ["  120", "120\n"],
+                    [" 5   ", "5\n"],
+                ]
+        self.do_tests(tests)
+
+    def test_list(self):
+        tests = [ 
+                    ["(2)", "(2)\n"],
+                    ["(10 20 30)  ", "(10 20 30)\n"],
+                    ["(10 20 (30 40) 50)", "(10 20 (30 40) 50)\n"],
+                    ["((((10))))", "((((10))))\n"],
+                    ["(1 2 ((3)) (4 (5 6)))", "(1 2 ((3)) (4 (5 6)))\n"],
+                ]
+        self.do_tests(tests)
+
+if __name__ == "__main__":
+    unittest.main()

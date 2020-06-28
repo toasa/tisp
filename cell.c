@@ -32,6 +32,25 @@ void expect(enum TokenKind tk) {
     next_token();
 }
 
+bool is_atom(enum TokenKind tk) {
+    return (tk == TK_NUM) || (tk == TK_T) || (tk == TK_NIL);
+}
+
+struct Cell *gen_atom_cell() {
+    struct Cell *new;
+    if (token->kind == TK_NUM) {
+        new = new_num_cell(token->val);
+        next_token();
+    } else if (token->kind == TK_T) {
+        new = new_cell(CK_T);
+        next_token();
+    } else if (token->kind == TK_NIL) {
+        new = new_cell(CK_NIL);
+        next_token();
+    }
+    return new;
+}
+
 struct Cell *gen_list_cells() {
     struct Cell head_c;
     struct Cell *cur = calloc(1, sizeof(struct Cell));
@@ -47,9 +66,8 @@ struct Cell *gen_list_cells() {
             next_token();
             new = new_cell(CK_PRONG);
             new->data = gen_list_cells(token);
-        } else if (token->kind == TK_NUM) {
-            new = new_num_cell(token->val);
-            next_token();
+        } else if (is_atom(token->kind)) {
+            new = gen_atom_cell();
         }
         cur->next = new;
         cur = new;
@@ -65,12 +83,11 @@ struct Cell *gen_cells(struct Token *tokens) {
     token = tokens;
 
     struct Cell *cur;
-    if (token->kind == TK_NUM) {
-        cur = new_num_cell(token->val);
-        next_token();
-    } else if (token->kind == TK_LPARENT) {
+    if (token->kind == TK_LPARENT) {
         next_token();
         cur = gen_list_cells();
+    } else if (is_atom(token->kind)) {
+        cur = gen_atom_cell();
     }
     return cur;
 }

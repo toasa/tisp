@@ -21,8 +21,9 @@ struct Cell *read_from_stdin(char *input) {
 }
 
 struct Cell *eval(struct Cell *c) {
-    // number
-    if (c->kind == CK_NUM && c->next == NULL) {
+    // atom
+    if ((c->kind == CK_NUM || c->kind == CK_T || c->kind == CK_NIL)
+      && c->next == NULL) {
         return c;
     }
 
@@ -40,15 +41,27 @@ struct Cell *eval(struct Cell *c) {
     return NULL;
 }
 
+void print_atom(struct Cell *c) {
+    bool is_last = (c->next == NULL);
+
+    if (c->kind == CK_NUM) {
+        printf("%d", c->val);
+    } else if (c->kind == CK_T) {
+        printf("T");
+    } else if (c->kind == CK_NIL) {
+        printf("NIL");
+    }
+
+    if (!is_last) {
+        printf(" ");
+    }
+}
+
 void print_list(struct Cell *c) {
     printf("(");
     for (struct Cell *c_i = c; c_i != NULL; c_i = c_i->next) {
-        if (c_i->kind == CK_NUM) {
-            if (c_i->next == NULL) {
-                printf("%d", c_i->val);
-            } else {
-                printf("%d ", c_i->val);
-            }
+        if (c_i->kind == CK_NUM || c_i->kind == CK_T || c_i->kind == CK_NIL) {
+            print_atom(c_i);
         } else if (c_i->kind == CK_PRONG) {
             print_list(c_i->data);
             if (c_i->next != NULL) {
@@ -66,7 +79,8 @@ void print(struct Cell *c) {
     } else if (c->kind == CK_PRONG) {
         print(c->data);
     } else {
-        printf("%d\n", c->val);
+        print_atom(c);
+        printf("\n");
     }
 }
 

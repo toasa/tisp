@@ -10,6 +10,8 @@ enum TokenKind {
     TK_LPARENT, // (
     TK_RPARENT, // )
     TK_PRIM,
+    TK_T,
+    TK_NIL,
     TK_SYMBOL,
     TK_EOF,
 };
@@ -28,6 +30,8 @@ struct Token *tokenize(char *input);
 // cell.c
 enum CellKind {
     CK_NUM,
+    CK_T,
+    CK_NIL,
     CK_PRONG,
     CK_PRIM,
     CK_SYMBOL,

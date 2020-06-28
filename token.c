@@ -59,6 +59,10 @@ struct Token *tokenize(char *input) {
             strncpy(str, input_org, len);
             if (is_primitive(str)) {
                 cur = new_str_token(cur, TK_PRIM, str);
+            } else if (equal_strings(str, "T")) {
+                cur = new_str_token(cur, TK_T, str);
+            } else if (equal_strings(str, "NIL")) {
+                cur = new_str_token(cur, TK_NIL, str);
             } else {
                 cur = new_str_token(cur, TK_SYMBOL, str);
             }

@@ -23,7 +23,6 @@ class TestRun(unittest.TestCase):
 
         f.close()
 
-
     def test_num(self):
         tests = [ 
                     ["2", "2\n"],
@@ -41,6 +40,15 @@ class TestRun(unittest.TestCase):
                     ["(quote (10 20 (30 40) 50))", "(10 20 (30 40) 50)\n"],
                     ["(quote (((10))))", "(((10)))\n"],
                     ["(quote (1 2 ((3)) (4 (5 6))))", "(1 2 ((3)) (4 (5 6)))\n"],
+                    ["(quote (quote 2))", "(2)\n"],
+                ]
+        self.do_tests(tests)
+
+    def test_T_NIL(self):
+        tests = [
+                    ["T", "T\n"],
+                    ["NIL  ", "NIL\n"],
+                    ["(quote (T NIL T))", "(T NIL T)\n"],
                 ]
         self.do_tests(tests)
 

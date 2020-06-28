@@ -6,6 +6,13 @@ struct Cell *new_cell(enum CellKind kind) {
     return c;
 }
 
+struct Cell *new_prim_cell(enum PrimKind pk) {
+    struct Cell *c = calloc(1, sizeof(struct Cell));
+    c->kind = CK_PRIM;
+    c->pkind = pk;
+    return c;
+}
+
 struct Cell *new_num_cell(int val) {
     struct Cell *c = new_cell(CK_NUM);
     c->val = val;
@@ -31,7 +38,12 @@ struct Cell *gen_list_cells() {
     head_c.next = cur;
     while (token->kind != TK_RPARENT) {
         struct Cell *new;
-        if (token->kind == TK_LPARENT) {
+        if (token->kind == TK_PRIM) {
+            if (equal_strings(token->str, "quote")) {
+                new = new_prim_cell(PK_QUOTE);
+            }
+            next_token();
+        } else if (token->kind == TK_LPARENT) {
             next_token();
             new = new_cell(CK_PRONG);
             new->data = gen_list_cells(token);

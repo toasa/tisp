@@ -21,7 +21,23 @@ struct Cell *read_from_stdin(char *input) {
 }
 
 struct Cell *eval(struct Cell *c) {
-    return c;
+    // number
+    if (c->kind == CK_NUM && c->next == NULL) {
+        return c;
+    }
+
+    if (c->kind == CK_PRIM) {
+        if (c->pkind == PK_QUOTE) {
+            return eval(c->next);
+        }
+    }
+
+    if (c->kind == CK_PRONG) {
+        return c->data;
+    }
+
+    error("cannot evaluate");
+    return NULL;
 }
 
 void print_list(struct Cell *c) {
@@ -47,6 +63,8 @@ void print(struct Cell *c) {
     if (c->is_head) {
         print_list(c);
         printf("\n");
+    } else if (c->kind == CK_PRONG) {
+        print(c->data);
     } else {
         printf("%d\n", c->val);
     }

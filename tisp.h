@@ -2,19 +2,25 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdarg.h>
+#include <string.h>
 
 // token.c
 enum TokenKind {
     TK_NUM,
     TK_LPARENT, // (
     TK_RPARENT, // )
+    TK_PRIM,
+    TK_SYMBOL,
     TK_EOF,
 };
 
 struct Token {
     enum TokenKind kind;
-    int val; // kind が TK_NUM の場合に使う
     struct Token *next;
+
+    int val; // kind が TK_NUM の場合に使う
+
+    char *str; // king が TK_PRIM, TK_SYMBOL の場合に使う
 };
 
 struct Token *tokenize(char *input);
@@ -23,15 +29,24 @@ struct Token *tokenize(char *input);
 enum CellKind {
     CK_NUM,
     CK_PRONG,
+    CK_PRIM,
+    CK_SYMBOL,
+};
+
+enum PrimKind {
+    PK_NONE,
+    PK_QUOTE,
 };
 
 struct Cell {
     enum CellKind kind;
-    int val; // Kind が CK_NUM の場合に使う
+    enum PrimKind pkind;
+
+    int val; // kind が CK_NUM の場合に使う
 
     bool is_head;
 
-    struct Cell *data; // 入れ子の LIST の場合に使う
+    struct Cell *data; // kind が CK_PRONG の場合に使う
     struct Cell *next;
 };
 
@@ -39,5 +54,7 @@ struct Cell *gen_cells(struct Token *tokens);
 
 // util.c
 bool is_integer(char c);
+bool is_alpha(char c);
+bool equal_strings(char *str1, char *str2);
 void assert(int result, char *fmt, ...);
 void error(char *fmt, ...);

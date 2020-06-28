@@ -13,6 +13,25 @@ struct Token *new_num_token(struct Token *prev, int val) {
     return t;
 }
 
+struct Token *new_str_token(struct Token *prev, enum TokenKind kind, char *str) {
+    struct Token *t = new_token(prev, kind);
+    t->str = str;
+    return t;
+}
+
+bool is_primitive(char *str) {
+    char *primitives[] = {
+        "quote",
+        NULL,
+    };
+    for (int i = 0; primitives[i] != NULL; i++) {
+        if (equal_strings(primitives[i], str)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 struct Token *tokenize(char *input) {
     struct Token head;
     struct Token *cur = calloc(1, sizeof(struct Token));
@@ -27,6 +46,22 @@ struct Token *tokenize(char *input) {
                 i++;
             } while (is_integer(input[i]));
             cur = new_num_token(cur, n);
+            continue;
+        } else if (is_alpha(input[i])) {
+            char *input_org = input + i;
+            int len = 0;
+            while (is_alpha(input[i])) {
+                len++;
+                i++;
+            }
+            // create null terminated string
+            char *str = calloc(1, sizeof(char) * (len + 1));
+            strncpy(str, input_org, len);
+            if (is_primitive(str)) {
+                cur = new_str_token(cur, TK_PRIM, str);
+            } else {
+                cur = new_str_token(cur, TK_SYMBOL, str);
+            }
             continue;
         } else if (input[i] == '(') {
             cur = new_token(cur, TK_LPARENT);

@@ -46,7 +46,12 @@ struct Cell *eval(struct Cell *c) {
                     && (op2->kind == CK_T || op2->kind == CK_NIL)) {
                 return bool_to_atom(op1->kind == op2->kind);
             }
-
+            return bool_to_atom(false);
+        } else if (c->pkind == PK_ATOM) {
+            struct Cell *op = eval(c->next);
+            if (op->kind == CK_NUM || op->kind == CK_T || op->kind == CK_NIL) {
+                return bool_to_atom(true);
+            }
             return bool_to_atom(false);
         }
     }

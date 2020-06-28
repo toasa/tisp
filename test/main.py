@@ -68,5 +68,18 @@ class TestRun(unittest.TestCase):
                 ]
         self.do_tests(tests)
 
+    def test_atom(self):
+        tests = [
+                    ["(atom 10)", "T\n"],
+                    ["(atom T)", "T\n"],
+                    ["(atom NIL)", "T\n"],
+                    ["(atom (quote (T NIL)))", "NIL\n"],
+                    ["(atom (quote (1 2 3)))", "NIL\n"],
+                    ["(atom (eq 1 2))", "T\n"],
+                    ["(atom (eq 2 2))", "T\n"],
+                    ["(atom (eq 2 (quote (30 30))))", "T\n"],
+                ]
+        self.do_tests(tests)
+
 if __name__ == "__main__":
     unittest.main()

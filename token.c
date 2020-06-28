@@ -23,6 +23,7 @@ bool is_primitive(char *str) {
     char *primitives[] = {
         "quote",
         "eq",
+        "atom",
         NULL,
     };
     for (int i = 0; primitives[i] != NULL; i++) {

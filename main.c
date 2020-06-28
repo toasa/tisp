@@ -35,7 +35,7 @@ struct Cell *eval(struct Cell *c) {
 
     if (c->kind == CK_PRIM) {
         if (c->pkind == PK_QUOTE) {
-            return eval(c->next);
+            return c->next;
         } else if (c->pkind == PK_EQ) {
             struct Cell *op1 = eval(c->next);
             struct Cell *op2 = eval(c->next->next);
@@ -52,7 +52,7 @@ struct Cell *eval(struct Cell *c) {
     }
 
     if (c->kind == CK_PRONG) {
-        return c->data;
+        return eval(c->data);
     }
 
     error("cannot evaluate");

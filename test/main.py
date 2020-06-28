@@ -88,7 +88,7 @@ class TestRun(unittest.TestCase):
                     ["(car (quote (10 20)))", "10\n"],
                     ["(car (quote (T 10 NIL 20)))", "T\n"],
                 ]
-        # self.do_tests(tests)
+        self.do_tests(tests)
 
 if __name__ == "__main__":
     unittest.main()

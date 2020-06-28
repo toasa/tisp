@@ -90,5 +90,13 @@ class TestRun(unittest.TestCase):
                 ]
         self.do_tests(tests)
 
+    def test_cdr(self):
+        tests = [
+                    ["(cdr (quote (10)))", "NIL\n"],
+                    ["(cdr (quote (10 20)))", "(20)\n"],
+                    ["(cdr (quote (T 10 NIL 20)))", "(10 NIL 20)\n"],
+                ]
+        self.do_tests(tests)
+
 if __name__ == "__main__":
     unittest.main()

@@ -77,7 +77,10 @@ struct Cell *gen_list_cells() {
                 new = new_prim_cell(PK_ATOM);
             } else if (cur_token_is("car")) {
                 new = new_prim_cell(PK_CAR);
+            } else if (cur_token_is("cdr")) {
+                new = new_prim_cell(PK_CDR);
             }
+
             next_token();
         } else if (token->kind == TK_LPARENT) {
             next_token();

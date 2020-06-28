@@ -31,6 +31,14 @@ struct Cell *eval_atom(struct Cell *c) {
     return bool_to_atom(false);
 }
 
+struct Cell *eval_car(struct Cell *c) {
+    // `eval(c->next)` returns PRONG whose data is head of linked list.
+    struct Cell *op = eval(c->next)->data;
+    op->next = NULL;
+    op->is_head = false;
+    return op;
+}
+
 struct Cell *eval(struct Cell *c) {
     // atom
     if (c->kind == CK_NUM || c->kind == CK_T || c->kind == CK_NIL) {
@@ -45,6 +53,8 @@ struct Cell *eval(struct Cell *c) {
             return eval_eq(c);
         } else if (c->pkind == PK_ATOM) {
             return eval_atom(c);
+        } else if (c->pkind == PK_CAR) {
+            return eval_car(c);
         }
     }
 

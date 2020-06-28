@@ -42,6 +42,7 @@ enum PrimKind {
     PK_QUOTE,
     PK_EQ,
     PK_ATOM,
+    PK_CAR,
 };
 
 struct Cell {

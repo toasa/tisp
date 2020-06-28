@@ -24,6 +24,7 @@ bool is_primitive(char *str) {
         "quote",
         "eq",
         "atom",
+        "car",
         NULL,
     };
     for (int i = 0; primitives[i] != NULL; i++) {

@@ -45,6 +45,7 @@ class TestRun(unittest.TestCase):
                     ["(quote (((10))))", "(((10)))\n"],
                     ["(quote (1 2 ((3)) (4 (5 6))))", "(1 2 ((3)) (4 (5 6)))\n"],
                     ["(quote (quote 2))", "(2)\n"],
+                    ["(quote ())", "NIL\n"],
                 ]
         self.do_tests(tests)
 

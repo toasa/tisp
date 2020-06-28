@@ -59,6 +59,13 @@ struct Cell *gen_list_cells() {
     struct Cell head_c;
     struct Cell *cur = calloc(1, sizeof(struct Cell));
     head_c.next = cur;
+
+    // The '()' means 'NIL'.
+    if (token->kind == TK_RPARENT) {
+        next_token();
+        return new_cell(CK_NIL);
+    }
+
     while (token->kind != TK_RPARENT) {
         struct Cell *new;
         if (token->kind == TK_PRIM) {

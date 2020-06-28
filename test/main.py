@@ -52,5 +52,17 @@ class TestRun(unittest.TestCase):
                 ]
         self.do_tests(tests)
 
+    def test_eq(self):
+        tests = [
+                    ["(eq 10 10)", "T\n"],
+                    ["(eq 10 15)", "NIL\n"],
+                    ["(eq T T)", "T\n"],
+                    ["(eq T NIL)", "NIL\n"],
+                    ["(eq NIL NIL)", "T\n"],
+                    ["(eq (quote (10 20 30)) (quote (10 20 30)))", "NIL\n"],
+                    ["(eq (quote (10 20 30)) (quote (11 22 33)))", "NIL\n"],
+                ]
+        self.do_tests(tests)
+
 if __name__ == "__main__":
     unittest.main()

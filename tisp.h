@@ -40,6 +40,7 @@ enum CellKind {
 enum PrimKind {
     PK_NONE,
     PK_QUOTE,
+    PK_EQ,
 };
 
 struct Cell {
@@ -54,6 +55,7 @@ struct Cell {
     struct Cell *next;
 };
 
+struct Cell *new_cell(enum CellKind kind);
 struct Cell *gen_cells(struct Token *tokens);
 
 // util.c

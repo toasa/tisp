@@ -60,6 +60,8 @@ struct Cell *gen_list_cells() {
         if (token->kind == TK_PRIM) {
             if (equal_strings(token->str, "quote")) {
                 new = new_prim_cell(PK_QUOTE);
+            } else if (equal_strings(token->str, "eq")) {
+                new = new_prim_cell(PK_EQ);
             }
             next_token();
         } else if (token->kind == TK_LPARENT) {

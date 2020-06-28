@@ -20,6 +20,13 @@ struct Cell *read_from_stdin(char *input) {
     return gen_cells(tokens);
 }
 
+struct Cell *bool_to_atom(bool b) {
+    if (b) {
+        return new_cell(CK_T);
+    }
+    return new_cell(CK_NIL);
+}
+
 struct Cell *eval(struct Cell *c) {
     // atom
     if (c->kind == CK_NUM || c->kind == CK_T || c->kind == CK_NIL) {
@@ -29,6 +36,18 @@ struct Cell *eval(struct Cell *c) {
     if (c->kind == CK_PRIM) {
         if (c->pkind == PK_QUOTE) {
             return eval(c->next);
+        } else if (c->pkind == PK_EQ) {
+            struct Cell *op1 = eval(c->next);
+            struct Cell *op2 = eval(c->next->next);
+
+            if (op1->kind == CK_NUM && op2->kind == CK_NUM) {
+                return bool_to_atom(op1->val == op2->val);
+            } else if ((op1->kind == CK_T || op1->kind == CK_NIL)
+                    && (op2->kind == CK_T || op2->kind == CK_NIL)) {
+                return bool_to_atom(op1->kind == op2->kind);
+            }
+
+            return bool_to_atom(false);
         }
     }
 

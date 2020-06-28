@@ -22,6 +22,7 @@ struct Token *new_str_token(struct Token *prev, enum TokenKind kind, char *str) 
 bool is_primitive(char *str) {
     char *primitives[] = {
         "quote",
+        "eq",
         NULL,
     };
     for (int i = 0; primitives[i] != NULL; i++) {

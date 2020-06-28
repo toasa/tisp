@@ -9,6 +9,9 @@ class TestRun(unittest.TestCase):
         os.system("./main \"{0}\" > {1}".format(arg, self.OUTPUT_PATH))
 
     def do_tests(self, tests):
+        if not os.path.exists(self.OUTPUT_PATH):
+            os.system("touch {0}".format(self.OUTPUT_PATH))
+
         f = open(self.OUTPUT_PATH)
 
         for test in tests:

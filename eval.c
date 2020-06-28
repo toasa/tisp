@@ -49,7 +49,6 @@ struct Cell *eval(struct Cell *c) {
     }
 
     if (c->kind == CK_PRONG) {
-        // return c->data;
         return eval(c->data);
     }
 

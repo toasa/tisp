@@ -22,8 +22,7 @@ struct Cell *read_from_stdin(char *input) {
 
 struct Cell *eval(struct Cell *c) {
     // atom
-    if ((c->kind == CK_NUM || c->kind == CK_T || c->kind == CK_NIL)
-      && c->next == NULL) {
+    if (c->kind == CK_NUM || c->kind == CK_T || c->kind == CK_NIL) {
         return c;
     }
 

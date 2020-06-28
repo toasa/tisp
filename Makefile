@@ -1,5 +1,5 @@
 compile:
-	clang -o main main.c cell.c token.c util.c
+	clang -o main main.c eval.c cell.c token.c util.c
 
 run: compile
 	./main

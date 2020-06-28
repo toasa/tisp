@@ -59,6 +59,9 @@ struct Cell {
 struct Cell *new_cell(enum CellKind kind);
 struct Cell *gen_cells(struct Token *tokens);
 
+// eval.c
+struct Cell *eval(struct Cell *c);
+
 // util.c
 bool is_integer(char c);
 bool is_alpha(char c);

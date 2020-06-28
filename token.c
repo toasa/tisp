@@ -34,6 +34,28 @@ bool is_primitive(char *str) {
     return false;
 }
 
+char *read_str(char *input, int *i) {
+    char *input_org = input + *i;
+    int len = 0;
+    while (is_alpha(input[*i])) {
+        len++;
+        (*i)++;
+    }
+    // create null terminated string
+    char *str = calloc(1, sizeof(char) * (len + 1));
+    strncpy(str, input_org, len);
+    return str;
+}
+
+int read_num(char *input, int *i) {
+    int n = 0;
+    do {
+        n = 10 * n + (input[*i] - '0');
+        (*i)++;
+    } while (is_integer(input[*i]));
+    return n;
+}
+
 struct Token *tokenize(char *input) {
     struct Token head;
     struct Token *cur = calloc(1, sizeof(struct Token));
@@ -42,23 +64,11 @@ struct Token *tokenize(char *input) {
     int i = 0;
     while (input[i] != '\0') {
         if (is_integer(input[i])) {
-            int n = 0;
-            do {
-                n = 10 * n + (input[i] - '0');
-                i++;
-            } while (is_integer(input[i]));
-            cur = new_num_token(cur, n);
+            int num = read_num(input, &i);
+            cur = new_num_token(cur, num);
             continue;
         } else if (is_alpha(input[i])) {
-            char *input_org = input + i;
-            int len = 0;
-            while (is_alpha(input[i])) {
-                len++;
-                i++;
-            }
-            // create null terminated string
-            char *str = calloc(1, sizeof(char) * (len + 1));
-            strncpy(str, input_org, len);
+            char *str = read_str(input, &i);
             if (is_primitive(str)) {
                 cur = new_str_token(cur, TK_PRIM, str);
             } else if (equal_strings(str, "T")) {

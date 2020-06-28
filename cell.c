@@ -25,6 +25,10 @@ void next_token() {
     token = token->next;
 }
 
+bool cur_token_is(char *str) {
+    return equal_strings(token->str, str);
+}
+
 void expect(enum TokenKind tk) {
     if (token->kind != tk) {
         error("expect %d but got %d\n", tk, token->kind);
@@ -58,9 +62,9 @@ struct Cell *gen_list_cells() {
     while (token->kind != TK_RPARENT) {
         struct Cell *new;
         if (token->kind == TK_PRIM) {
-            if (equal_strings(token->str, "quote")) {
+            if (cur_token_is("quote")) {
                 new = new_prim_cell(PK_QUOTE);
-            } else if (equal_strings(token->str, "eq")) {
+            } else if (cur_token_is("eq")) {
                 new = new_prim_cell(PK_EQ);
             }
             next_token();

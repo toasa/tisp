@@ -1,25 +1,25 @@
 #include "tisp.h"
 
-struct Token *new_token(struct Token *prev, enum TokenKind kind) {
+static struct Token *new_token(struct Token *prev, enum TokenKind kind) {
     struct Token *t = calloc(1, sizeof(struct Token));
     t->kind = kind;
     prev->next = t;
     return t;
 }
 
-struct Token *new_num_token(struct Token *prev, int val) {
+static struct Token *new_num_token(struct Token *prev, int val) {
     struct Token *t = new_token(prev, TK_NUM);
     t->val = val;
     return t;
 }
 
-struct Token *new_str_token(struct Token *prev, enum TokenKind kind, char *str) {
+static struct Token *new_str_token(struct Token *prev, enum TokenKind kind, char *str) {
     struct Token *t = new_token(prev, kind);
     t->str = str;
     return t;
 }
 
-bool is_primitive(char *str) {
+static bool is_primitive(char *str) {
     char *primitives[] = {
         "quote",
         "eq",
@@ -37,7 +37,7 @@ bool is_primitive(char *str) {
     return false;
 }
 
-char *read_str(char *input, int *i) {
+static char *read_str(char *input, int *i) {
     char *input_org = input + *i;
     int len = 0;
     while (is_alpha(input[*i])) {
@@ -50,7 +50,7 @@ char *read_str(char *input, int *i) {
     return str;
 }
 
-int read_num(char *input, int *i) {
+static int read_num(char *input, int *i) {
     int n = 0;
     do {
         n = 10 * n + (input[*i] - '0');

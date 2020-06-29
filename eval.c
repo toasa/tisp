@@ -1,6 +1,6 @@
 #include "tisp.h"
 
-struct Cell *bool_to_atom(bool b) {
+static struct Cell *bool_to_atom(bool b) {
     if (b) {
         return new_cell(CK_T);
     }
@@ -19,7 +19,7 @@ static bool is_list(struct Cell *c) {
 
 struct Cell *eval(struct Cell *c);
 
-struct Cell *eval_eq(struct Cell *c) {
+static struct Cell *eval_eq(struct Cell *c) {
     struct Cell *op1 = eval(c->next);
     struct Cell *op2 = eval(c->next->next);
 
@@ -32,7 +32,7 @@ struct Cell *eval_eq(struct Cell *c) {
     return bool_to_atom(false);
 }
 
-struct Cell *eval_atom(struct Cell *c) {
+static struct Cell *eval_atom(struct Cell *c) {
     struct Cell *op = eval(c->next);
     if (op->kind == CK_NUM || op->kind == CK_T || op->kind == CK_NIL) {
         return bool_to_atom(true);
@@ -46,7 +46,7 @@ struct Cell *eval_car(struct Cell *c) {
     return op;
 }
 
-struct Cell *eval_cdr(struct Cell *c) {
+static struct Cell *eval_cdr(struct Cell *c) {
     struct Cell *op = eval(c->next);
 
     // A result of cdr for only one element list is NIL.
@@ -58,7 +58,7 @@ struct Cell *eval_cdr(struct Cell *c) {
     return op;
 }
 
-struct Cell *eval_cons(struct Cell *c) {
+static struct Cell *eval_cons(struct Cell *c) {
     struct Cell *op1 = eval(c->next);
     struct Cell *op2 = eval(c->next->next);
 

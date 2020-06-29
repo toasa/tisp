@@ -8,7 +8,7 @@ bool is_alpha(char c) {
     return (('a' <= c) && (c <= 'z')) || (('A' <= c) && (c <= 'Z'));
 }
 
-bool equal_strings(char *str1, char *str2) {
+bool equal_strings(const char *str1, const char *str2) {
     int len1 = strlen(str1);
     int len2 = strlen(str2);
 
@@ -23,7 +23,7 @@ bool equal_strings(char *str1, char *str2) {
     return true;
 }
 
-void assert(int result, char *fmt, ...) {
+void assert(bool result, char *fmt, ...) {
     if (!result) {
         fprintf(stderr, "assertion failed\n");
         error(fmt);

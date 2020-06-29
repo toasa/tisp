@@ -6,14 +6,14 @@ struct Cell *new_cell(enum CellKind kind) {
     return c;
 }
 
-struct Cell *new_prim_cell(enum PrimKind pk) {
+static struct Cell *new_prim_cell(enum PrimKind pk) {
     struct Cell *c = calloc(1, sizeof(struct Cell));
     c->kind = CK_PRIM;
     c->pkind = pk;
     return c;
 }
 
-struct Cell *new_num_cell(int val) {
+static struct Cell *new_num_cell(int val) {
     struct Cell *c = new_cell(CK_NUM);
     c->val = val;
     return c;
@@ -21,26 +21,26 @@ struct Cell *new_num_cell(int val) {
 
 struct Token *token;
 
-void next_token() {
+static void next_token() {
     token = token->next;
 }
 
-bool cur_token_is(char *str) {
+static bool cur_token_is(char *str) {
     return equal_strings(token->str, str);
 }
 
-void expect(enum TokenKind tk) {
+static void expect(enum TokenKind tk) {
     if (token->kind != tk) {
         error("expect %d but got %d\n", tk, token->kind);
     }
     next_token();
 }
 
-bool is_atom(enum TokenKind tk) {
+static bool is_atom(enum TokenKind tk) {
     return (tk == TK_NUM) || (tk == TK_T) || (tk == TK_NIL);
 }
 
-struct Cell *gen_atom_cell() {
+static struct Cell *gen_atom_cell() {
     struct Cell *new;
     if (token->kind == TK_NUM) {
         new = new_num_cell(token->val);
@@ -52,7 +52,7 @@ struct Cell *gen_atom_cell() {
     return new;
 }
 
-struct Cell *gen_list_cells() {
+static struct Cell *gen_list_cells() {
     struct Cell head;
     struct Cell *cur = calloc(1, sizeof(struct Cell));
     head.next = cur;

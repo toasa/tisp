@@ -66,6 +66,6 @@ struct Cell *eval(struct Cell *c);
 // util.c
 bool is_integer(char c);
 bool is_alpha(char c);
-bool equal_strings(char *str1, char *str2);
-void assert(int result, char *fmt, ...);
+bool equal_strings(const char *str1, const char *str2);
+void assert(bool result, char *fmt, ...);
 void error(char *fmt, ...);

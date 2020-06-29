@@ -79,6 +79,8 @@ struct Cell *gen_list_cells() {
                 new = new_prim_cell(PK_CAR);
             } else if (cur_token_is("cdr")) {
                 new = new_prim_cell(PK_CDR);
+            } else if (cur_token_is("cons")) {
+                new = new_prim_cell(PK_CONS);
             }
 
             next_token();

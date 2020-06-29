@@ -7,6 +7,12 @@ struct Cell *bool_to_atom(bool b) {
     return new_cell(CK_NIL);
 }
 
+bool cell_is_atom(struct Cell *c) {
+    return (c->kind == CK_NUM)
+        || (c->kind == CK_T)
+        || (c->kind == CK_NIL);
+}
+
 struct Cell *eval(struct Cell *c);
 
 struct Cell *eval_eq(struct Cell *c) {
@@ -41,16 +47,36 @@ struct Cell *eval_car(struct Cell *c) {
 
 struct Cell *eval_cdr(struct Cell *c) {
     // `eval(c->next)` returns PRONG whose data is head of linked list.
-    struct Cell *op = eval(c->next)->data;
+    struct Cell *op = eval(c->next);
 
     // A result of cdr for only one element list is NIL.
-    if (op->next == NULL) {
+    if (op->data->next == NULL) {
         return bool_to_atom(false);
     }
 
-    struct Cell *cdr = op->next;
-    cdr->is_head = true;
-    return cdr;
+    op->data = op->data->next;
+    op->data->is_head = true;
+    return op;
+}
+
+struct Cell *eval_cons(struct Cell *c) {
+    struct Cell *op1 = eval(c->next);
+    struct Cell *op2 = eval(c->next->next);
+
+    if (cell_is_atom(op1) && !cell_is_atom(op2)) {
+        op2->data->is_head = false;
+        op1->is_head = true;
+        op1->next = op2->data;
+        op2->data = op1;
+        return op2->data;
+    } else if (!cell_is_atom(op1) && !cell_is_atom(op2)) {
+        op1->next = op2->data;
+        op1->is_head = true;
+        return op1;
+    }
+
+    error("dotted pair is not supported yet");
+    return NULL;
 }
 
 struct Cell *eval(struct Cell *c) {
@@ -71,6 +97,8 @@ struct Cell *eval(struct Cell *c) {
             return eval_car(c);
         } else if (c->pkind == PK_CDR) {
             return eval_cdr(c);
+        } else if (c->pkind == PK_CONS) {
+            return eval_cons(c);
         }
     }
 

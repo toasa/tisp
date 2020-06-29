@@ -41,6 +41,7 @@ class TestRun(unittest.TestCase):
                     ["(quote (2))", "(2)\n"],
                     ["(quote (10 20 30))  ", "(10 20 30)\n"],
                     ["(quote (10 20 (30 40) 50))", "(10 20 (30 40) 50)\n"],
+                    ["(quote ((10 20) 30 40))", "((10 20) 30 40)\n"],
                     ["(quote ((10)))", "((10))\n"],
                     ["(quote (((10))))", "(((10)))\n"],
                     ["(quote (1 2 ((3)) (4 (5 6))))", "(1 2 ((3)) (4 (5 6)))\n"],
@@ -95,6 +96,14 @@ class TestRun(unittest.TestCase):
                     ["(cdr (quote (10)))", "NIL\n"],
                     ["(cdr (quote (10 20)))", "(20)\n"],
                     ["(cdr (quote (T 10 NIL 20)))", "(10 NIL 20)\n"],
+                ]
+        self.do_tests(tests)
+
+    def test_cons(self):
+        tests = [
+                    ["(cons 1 (quote (2 3)))", "(1 2 3)\n"],
+                    ["(cons (quote (10 20)) (quote (30 40)))", "((10 20) 30 40)\n"],
+                    ["(cons (car (quote (10 20 30))) (cdr (quote (10 20 30))))", "(10 20 30)\n"],
                 ]
         self.do_tests(tests)
 

@@ -31,6 +31,7 @@ struct Token *tokenize(char *input);
 enum CellKind {
     CK_LIST,
     CK_NUM,
+    CK_DOT,
     CK_T,
     CK_NIL,
     CK_PRIM,
@@ -54,7 +55,10 @@ struct Cell {
     int val; // kind が CK_NUM の場合に使う
 
     struct Cell *data; // kind が CK_LIST の場合に使う
-    struct Cell *next;
+    struct Cell *next; // リストの次要素を指す場合に使う
+
+    struct Cell *car; // kind が CK_DOT の場合に使う
+    struct Cell *cdr; // kind が CK_DOT の場合に使う
 };
 
 struct Cell *new_cell(enum CellKind kind);

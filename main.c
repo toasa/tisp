@@ -20,9 +20,9 @@ struct Cell *read_from_stdin(char *input) {
     return gen_cells(tokens);
 }
 
-void print_atom(struct Cell *c) {
-    bool is_last = (c->next == NULL);
+static void print_cell(struct Cell *c);
 
+static void print_atom(struct Cell *c) {
     if (c->kind == CK_NUM) {
         printf("%d", c->val);
     } else if (c->kind == CK_T) {
@@ -30,37 +30,45 @@ void print_atom(struct Cell *c) {
     } else if (c->kind == CK_NIL) {
         printf("NIL");
     }
-
-    if (!is_last) {
-        printf(" ");
-    }
 }
 
-void print_list(struct Cell *c) {
+static void print_list(struct Cell *c) {
     printf("(");
     for (struct Cell *c_i = c; c_i != NULL; c_i = c_i->next) {
-        if (c_i->kind == CK_NUM || c_i->kind == CK_T || c_i->kind == CK_NIL) {
-            print_atom(c_i);
-        } else if (c_i->kind == CK_LIST) {
-            print_list(c_i->data);
-            if (c_i->next != NULL) {
-                printf(" ");
-            }
+        print_cell(c_i);
+
+        // TODO? condition of `PK_NONE` is need?
+        if (c_i->pkind == PK_NONE && c_i->next != NULL) {
+            printf(" ");
         }
     }
     printf(")");
 }
 
-void print(struct Cell *c) {
+static void print_dot(struct Cell *c) {
+    printf("(");
+    print_cell(c->car);
+    printf(" . ");
+    print_cell(c->cdr);
+    printf(")");
+}
+
+static void print_cell(struct Cell *c) {
     if (c->kind == CK_LIST) {
         print_list(c->data);
+    } else if (c->kind == CK_DOT) {
+        print_dot(c);
     } else {
         print_atom(c);
     }
+}
+
+static void print(struct Cell *c) {
+    print_cell(c);
     printf("\n");
 }
 
-void repl() {
+static void repl() {
     while (1) {
         struct Cell *c = read();
         c = eval(c);

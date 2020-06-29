@@ -73,8 +73,11 @@ static struct Cell *eval_cons(struct Cell *c) {
         return list;
     }
 
-    error("dotted pair is not supported yet");
-    return NULL;
+    // dotted pair
+    struct Cell *dot = new_cell(CK_DOT);
+    dot->car = op1;
+    dot->cdr = op2;
+    return dot;
 }
 
 struct Cell *eval(struct Cell *c) {

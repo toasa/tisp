@@ -101,10 +101,17 @@ class TestRun(unittest.TestCase):
 
     def test_cons(self):
         tests = [
+                    ["(cons 1 ())", "(1)\n"],
+                    ["(cons 1 NIL)", "(1)\n"],
                     ["(cons 1 (quote (2 3)))", "(1 2 3)\n"],
                     ["(cons (quote (10 20)) (quote (30 40)))", "((10 20) 30 40)\n"],
                     ["(cons (car (quote (10 20 30))) (cdr (quote (10 20 30))))", "(10 20 30)\n"],
                     ["(cons 10 20)", "(10 . 20)\n"],
+                    ["(cons (quote (10 20)) 30)", "((10 20) . 30)\n"],
+                    ["(cons (quote (10 20)) NIL)", "((10 20))\n"],
+                    ["(cons 1 (cons 2 (cons 3 ())))", "(1 2 3)\n"],
+                    ["(car (cons 1 (quote (2 3))))", "1\n"],
+                    ["(cdr (cons 1 (quote (2 3))))", "(2 3)\n"],
                     ["(cons (quote (10 20)) 30)", "((10 20) . 30)\n"],
                 ]
         self.do_tests(tests)

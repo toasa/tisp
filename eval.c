@@ -62,15 +62,17 @@ static struct Cell *eval_cons(struct Cell *c) {
     struct Cell *op1 = eval(c->next);
     struct Cell *op2 = eval(c->next->next);
 
+    if (op2->kind == CK_NIL) {
+        op2 = new_list_cell(NULL);
+    }
+
     if (is_atom(op1) && is_list(op2)) {
         op1->next = op2->data;
         op2->data = op1;
         return op2;
     } else if (is_list(op1) && is_list(op2)) {
         op1->next = op2->data;
-        struct Cell *list = new_cell(CK_LIST);
-        list->data = op1;
-        return list;
+        return new_list_cell(op1);
     }
 
     // dotted pair

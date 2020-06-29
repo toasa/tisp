@@ -62,6 +62,7 @@ struct Cell {
 };
 
 struct Cell *new_cell(enum CellKind kind);
+struct Cell *new_list_cell(struct Cell *data);
 struct Cell *gen_cells(struct Token *tokens);
 
 // eval.c

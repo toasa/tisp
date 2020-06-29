@@ -19,6 +19,12 @@ static struct Cell *new_num_cell(int val) {
     return c;
 }
 
+struct Cell *new_list_cell(struct Cell *data) {
+    struct Cell *c = new_cell(CK_LIST);
+    c->data = data;
+    return c;
+}
+
 struct Token *token;
 
 static void next_token() {
@@ -93,10 +99,7 @@ static struct Cell *gen_list_cells() {
     }
 
     expect(TK_RPARENT);
-    
-    struct Cell *list = new_cell(CK_LIST);
-    list->data = head.next->next;
-    return list;
+    return new_list_cell(head.next->next);
 }
 
 struct Cell *gen_cells(struct Token *tokens) {

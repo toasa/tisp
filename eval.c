@@ -7,10 +7,14 @@ struct Cell *bool_to_atom(bool b) {
     return new_cell(CK_NIL);
 }
 
-bool cell_is_atom(struct Cell *c) {
+static bool is_atom(struct Cell *c) {
     return (c->kind == CK_NUM)
         || (c->kind == CK_T)
         || (c->kind == CK_NIL);
+}
+
+static bool is_list(struct Cell *c) {
+    return (c->kind == CK_LIST);
 }
 
 struct Cell *eval(struct Cell *c);
@@ -28,7 +32,6 @@ struct Cell *eval_eq(struct Cell *c) {
     return bool_to_atom(false);
 }
 
-
 struct Cell *eval_atom(struct Cell *c) {
     struct Cell *op = eval(c->next);
     if (op->kind == CK_NUM || op->kind == CK_T || op->kind == CK_NIL) {
@@ -38,15 +41,12 @@ struct Cell *eval_atom(struct Cell *c) {
 }
 
 struct Cell *eval_car(struct Cell *c) {
-    // `eval(c->next)` returns PRONG whose data is head of linked list.
     struct Cell *op = eval(c->next)->data;
     op->next = NULL;
-    op->is_head = false;
     return op;
 }
 
 struct Cell *eval_cdr(struct Cell *c) {
-    // `eval(c->next)` returns PRONG whose data is head of linked list.
     struct Cell *op = eval(c->next);
 
     // A result of cdr for only one element list is NIL.
@@ -55,7 +55,6 @@ struct Cell *eval_cdr(struct Cell *c) {
     }
 
     op->data = op->data->next;
-    op->data->is_head = true;
     return op;
 }
 
@@ -63,16 +62,15 @@ struct Cell *eval_cons(struct Cell *c) {
     struct Cell *op1 = eval(c->next);
     struct Cell *op2 = eval(c->next->next);
 
-    if (cell_is_atom(op1) && !cell_is_atom(op2)) {
-        op2->data->is_head = false;
-        op1->is_head = true;
+    if (is_atom(op1) && is_list(op2)) {
         op1->next = op2->data;
         op2->data = op1;
-        return op2->data;
-    } else if (!cell_is_atom(op1) && !cell_is_atom(op2)) {
+        return op2;
+    } else if (is_list(op1) && is_list(op2)) {
         op1->next = op2->data;
-        op1->is_head = true;
-        return op1;
+        struct Cell *list = new_cell(CK_LIST);
+        list->data = op1;
+        return list;
     }
 
     error("dotted pair is not supported yet");
@@ -80,6 +78,11 @@ struct Cell *eval_cons(struct Cell *c) {
 }
 
 struct Cell *eval(struct Cell *c) {
+    // list
+    if (c->kind == CK_LIST) {
+        return eval(c->data);
+    }
+
     // atom
     if (c->kind == CK_NUM || c->kind == CK_T || c->kind == CK_NIL) {
         return c;
@@ -100,10 +103,6 @@ struct Cell *eval(struct Cell *c) {
         } else if (c->pkind == PK_CONS) {
             return eval_cons(c);
         }
-    }
-
-    if (c->kind == CK_PRONG) {
-        return eval(c->data);
     }
 
     error("cannot evaluate");

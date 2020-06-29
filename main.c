@@ -41,7 +41,7 @@ void print_list(struct Cell *c) {
     for (struct Cell *c_i = c; c_i != NULL; c_i = c_i->next) {
         if (c_i->kind == CK_NUM || c_i->kind == CK_T || c_i->kind == CK_NIL) {
             print_atom(c_i);
-        } else if (c_i->kind == CK_PRONG) {
+        } else if (c_i->kind == CK_LIST) {
             print_list(c_i->data);
             if (c_i->next != NULL) {
                 printf(" ");
@@ -52,15 +52,12 @@ void print_list(struct Cell *c) {
 }
 
 void print(struct Cell *c) {
-    if (c->is_head) {
-        print_list(c);
-        printf("\n");
-    } else if (c->kind == CK_PRONG) {
-        print(c->data);
+    if (c->kind == CK_LIST) {
+        print_list(c->data);
     } else {
         print_atom(c);
-        printf("\n");
     }
+    printf("\n");
 }
 
 void repl() {

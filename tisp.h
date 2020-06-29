@@ -29,10 +29,10 @@ struct Token *tokenize(char *input);
 
 // cell.c
 enum CellKind {
+    CK_LIST,
     CK_NUM,
     CK_T,
     CK_NIL,
-    CK_PRONG,
     CK_PRIM,
     CK_SYMBOL,
 };
@@ -53,9 +53,7 @@ struct Cell {
 
     int val; // kind が CK_NUM の場合に使う
 
-    bool is_head;
-
-    struct Cell *data; // kind が CK_PRONG の場合に使う
+    struct Cell *data; // kind が CK_LIST の場合に使う
     struct Cell *next;
 };
 

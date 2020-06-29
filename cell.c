@@ -44,21 +44,18 @@ struct Cell *gen_atom_cell() {
     struct Cell *new;
     if (token->kind == TK_NUM) {
         new = new_num_cell(token->val);
-        next_token();
     } else if (token->kind == TK_T) {
         new = new_cell(CK_T);
-        next_token();
     } else if (token->kind == TK_NIL) {
         new = new_cell(CK_NIL);
-        next_token();
     }
     return new;
 }
 
 struct Cell *gen_list_cells() {
-    struct Cell head_c;
+    struct Cell head;
     struct Cell *cur = calloc(1, sizeof(struct Cell));
-    head_c.next = cur;
+    head.next = cur;
 
     // The '()' means 'NIL'.
     if (token->kind == TK_RPARENT) {
@@ -86,19 +83,20 @@ struct Cell *gen_list_cells() {
             next_token();
         } else if (token->kind == TK_LPARENT) {
             next_token();
-            new = new_cell(CK_PRONG);
-            new->data = gen_list_cells(token);
+            new = gen_list_cells(token);
         } else if (is_atom(token->kind)) {
             new = gen_atom_cell();
+            next_token();
         }
         cur->next = new;
         cur = new;
     }
 
     expect(TK_RPARENT);
-
-    head_c.next->next->is_head = true;
-    return head_c.next->next;
+    
+    struct Cell *list = new_cell(CK_LIST);
+    list->data = head.next->next;
+    return list;
 }
 
 struct Cell *gen_cells(struct Token *tokens) {
@@ -110,6 +108,8 @@ struct Cell *gen_cells(struct Token *tokens) {
         cur = gen_list_cells();
     } else if (is_atom(token->kind)) {
         cur = gen_atom_cell();
+    } else {
+        error("unexpected token: %d", token->kind);
     }
     return cur;
 }

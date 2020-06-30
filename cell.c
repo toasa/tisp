@@ -84,8 +84,9 @@ static struct Cell *gen_list_cells() {
                 new = new_prim_cell(PK_CDR);
             } else if (cur_token_is("cons")) {
                 new = new_prim_cell(PK_CONS);
+            } else if (cur_token_is("cond")) {
+                new = new_prim_cell(PK_COND);
             }
-
             next_token();
         } else if (token->kind == TK_LPARENT) {
             next_token();

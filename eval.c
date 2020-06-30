@@ -82,6 +82,18 @@ static struct Cell *eval_cons(struct Cell *c) {
     return dot;
 }
 
+static struct Cell *eval_cond(struct Cell *c) {
+    struct Cell *c_i = c->next;
+    while (c_i != NULL) {
+        struct Cell *res = eval(c_i);
+        if (res->kind != CK_NIL) {
+            return c_i->data->next;
+        }
+        c_i = c_i->next;
+    }
+    return bool_to_atom(false);
+}
+
 struct Cell *eval(struct Cell *c) {
     // list
     if (c->kind == CK_LIST) {
@@ -107,6 +119,8 @@ struct Cell *eval(struct Cell *c) {
             return eval_cdr(c);
         } else if (c->pkind == PK_CONS) {
             return eval_cons(c);
+        } else if (c->pkind == PK_COND) {
+            return eval_cond(c);
         }
     }
 

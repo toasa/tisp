@@ -121,5 +121,13 @@ class TestRun(unittest.TestCase):
                 ]
         self.do_tests(tests)
 
+    def test_cond(self):
+        tests = [
+                    ["(cond ((eq 1 1) 1) ((atom ()) 2))", "1\n"],
+                    ["(cond ((eq 1 2) 1) ((atom ()) 2))", "2\n"],
+                    ["(cond ((eq 1 2) 1) ((atom (quote (10 20)) 2))", "NIL\n"],
+                    ["(cond (1 1) (2 2))", "1\n"],
+                ]
+
 if __name__ == "__main__":
     unittest.main()

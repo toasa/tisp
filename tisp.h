@@ -46,6 +46,7 @@ enum PrimKind {
     PK_CAR,
     PK_CDR,
     PK_CONS,
+    PK_COND,
 };
 
 struct Cell {

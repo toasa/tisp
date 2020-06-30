@@ -103,17 +103,25 @@ static struct Cell *gen_list_cells() {
     return new_list_cell(head.next->next);
 }
 
-struct Cell *gen_cells(struct Token *tokens) {
-    token = tokens;
-
+struct Cell *gen_cells() {
     struct Cell *cur;
     if (token->kind == TK_LPARENT) {
         next_token();
         cur = gen_list_cells();
     } else if (is_atom(token->kind)) {
         cur = gen_atom_cell();
+    } else if (token->kind == TK_QUOTE) {
+        next_token();
+        struct Cell *quote = new_prim_cell(PK_QUOTE);
+        quote->next = gen_cells();
+        cur = new_list_cell(quote);
     } else {
         error("unexpected token: %d", token->kind);
     }
     return cur;
+}
+
+struct Cell *gen_cell(struct Token *tokens) {
+    token = tokens;
+    return gen_cells();
 }

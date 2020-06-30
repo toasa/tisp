@@ -87,6 +87,8 @@ struct Token *tokenize(char *input) {
             cur = new_token(cur, TK_LPARENT);
         } else if (input[i] == ')') {
             cur = new_token(cur, TK_RPARENT);
+        } else if (input[i] == '\'') {
+            cur = new_token(cur, TK_QUOTE);
         } else if (input[i] == ' ') {
             // skip
         }

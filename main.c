@@ -12,12 +12,12 @@ struct Cell *read() {
 
     fgets(input, 1024, stdin);
     struct Token *tokens = tokenize(input);
-    return gen_cells(tokens);
+    return gen_cell(tokens);
 }
 
 struct Cell *read_from_stdin(char *input) {
     struct Token *tokens = tokenize(input);
-    return gen_cells(tokens);
+    return gen_cell(tokens);
 }
 
 static void print_cell(struct Cell *c);
@@ -36,9 +36,7 @@ static void print_list(struct Cell *c) {
     printf("(");
     for (struct Cell *c_i = c; c_i != NULL; c_i = c_i->next) {
         print_cell(c_i);
-
-        // TODO? condition of `PK_NONE` is need?
-        if (c_i->pkind == PK_NONE && c_i->next != NULL) {
+        if (c_i->next != NULL) {
             printf(" ");
         }
     }
@@ -55,6 +53,11 @@ static void print_dot(struct Cell *c) {
 
 static void print_cell(struct Cell *c) {
     if (c->kind == CK_LIST) {
+        if (c->data->pkind == PK_QUOTE) {
+            printf("'");
+            print_cell(c->data->next);
+            return;
+        }
         print_list(c->data);
     } else if (c->kind == CK_DOT) {
         print_dot(c);

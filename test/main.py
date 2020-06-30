@@ -36,6 +36,16 @@ class TestRun(unittest.TestCase):
                 ]
         self.do_tests(tests)
 
+    def test_quote(self):
+        tests = [
+                    ["'2", "2\n"],
+                    ["''30", "'30\n"],
+                    ["'T", "T\n"],
+                    ["'''NIL", "''NIL\n"],
+                    ["'(10 20 30)", "(10 20 30)\n"],
+                ]
+        self.do_tests(tests)
+
     def test_list(self):
         tests = [ 
                     ["(quote (2))", "(2)\n"],
@@ -45,7 +55,7 @@ class TestRun(unittest.TestCase):
                     ["(quote ((10)))", "((10))\n"],
                     ["(quote (((10))))", "(((10)))\n"],
                     ["(quote (1 2 ((3)) (4 (5 6))))", "(1 2 ((3)) (4 (5 6)))\n"],
-                    ["(quote (quote 2))", "(2)\n"],
+                    ["(quote (quote 2))", "'2\n"],
                     ["(quote ())", "NIL\n"],
                 ]
         self.do_tests(tests)

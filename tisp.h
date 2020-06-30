@@ -13,6 +13,7 @@ enum TokenKind {
     TK_T,
     TK_NIL,
     TK_SYMBOL,
+    TK_QUOTE,   // '
     TK_EOF,
 };
 
@@ -64,7 +65,7 @@ struct Cell {
 
 struct Cell *new_cell(enum CellKind kind);
 struct Cell *new_list_cell(struct Cell *data);
-struct Cell *gen_cells(struct Token *tokens);
+struct Cell *gen_cell(struct Token *tokens);
 
 // eval.c
 struct Cell *eval(struct Cell *c);

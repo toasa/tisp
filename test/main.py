@@ -65,6 +65,7 @@ class TestRun(unittest.TestCase):
                     ["(eq T T)", "T\n"],
                     ["(eq T NIL)", "NIL\n"],
                     ["(eq NIL NIL)", "T\n"],
+                    ["(eq () ())", "T\n"],
                     ["(eq (quote (10 20 30)) (quote (10 20 30)))", "NIL\n"],
                     ["(eq (quote (10 20 30)) (quote (11 22 33)))", "NIL\n"],
                 ]
@@ -75,11 +76,15 @@ class TestRun(unittest.TestCase):
                     ["(atom 10)", "T\n"],
                     ["(atom T)", "T\n"],
                     ["(atom NIL)", "T\n"],
+                    ["(atom ())", "T\n"],
+                    ["(atom (quote ()))", "T\n"],
                     ["(atom (quote (T NIL)))", "NIL\n"],
                     ["(atom (quote (1 2 3)))", "NIL\n"],
                     ["(atom (eq 1 2))", "T\n"],
                     ["(atom (eq 2 2))", "T\n"],
                     ["(atom (eq 2 (quote (30 30))))", "T\n"],
+                    ["(atom (atom 10))", "T\n"],
+                    ["(atom (quote (atom 10)))", "NIL\n"],
                 ]
         self.do_tests(tests)
 

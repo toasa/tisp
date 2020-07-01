@@ -150,6 +150,7 @@ class TestRun(unittest.TestCase):
                     ["(+ (+ 20 30) (+ 30 40))", "120\n"],
                     ["(+ '1 7)", "8\n"],
                 ]
+        self.do_tests(tests)
 
 if __name__ == "__main__":
     unittest.main()

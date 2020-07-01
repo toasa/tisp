@@ -47,6 +47,8 @@ static bool is_atom(enum TokenKind tk) {
         || (tk == TK_NIL) || (tk == TK_SYMBOL);
 }
 
+struct Cell *gen_cells();
+
 static struct Cell *gen_atom_cell() {
     struct Cell *new;
     if (token->kind == TK_NUM) {
@@ -100,6 +102,8 @@ static struct Cell *gen_list_cells() {
         } else if (is_atom(token->kind)) {
             new = gen_atom_cell();
             next_token();
+        } else {
+            new = gen_cells();
         }
         cur->next = new;
         cur = new;
@@ -115,8 +119,8 @@ struct Cell *gen_cells() {
         next_token();
         cur = gen_list_cells();
     } else if (is_atom(token->kind)) {
-        // TODO? need next_token()?
         cur = gen_atom_cell();
+        next_token();
     } else if (token->kind == TK_QUOTE) {
         next_token();
         struct Cell *quote = new_prim_cell(PK_QUOTE);

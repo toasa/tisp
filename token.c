@@ -29,6 +29,8 @@ static bool is_primitive(char *str) {
         "cons",
         "cond",
         "+",
+        "<",
+        ">",
         NULL,
     };
     for (int i = 0; primitives[i] != NULL; i++) {
@@ -90,8 +92,12 @@ struct Token *tokenize(char *input) {
             cur = new_token(cur, TK_RPARENT);
         } else if (input[i] == '\'') {
             cur = new_token(cur, TK_QUOTE);
-        } else if (input[i] == '+' ) {
+        } else if (input[i] == '+') {
             cur = new_str_token(cur, TK_PRIM, "+");
+        } else if (input[i] == '<') {
+            cur = new_str_token(cur, TK_PRIM, "<");
+        } else if (input[i] == '>') {
+            cur = new_str_token(cur, TK_PRIM, ">");
         } else if (input[i] == ' ') {
             // skip
         }

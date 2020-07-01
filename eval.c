@@ -106,6 +106,17 @@ static struct Cell *eval_add(struct Cell *c) {
     return new_num_cell(sum);
 }
 
+static struct Cell *eval_lt(struct Cell *c) {
+    assert(c->pkind == PK_LT || c->pkind == PK_GT, "invalid lt kind");
+    struct Cell *lhs = eval(c->next);
+    struct Cell *rhs = eval(c->next->next);
+    if (c->pkind == PK_LT) {
+        return bool_to_atom(lhs->val < rhs->val);
+    }
+    // case of PK_GT
+    return bool_to_atom(lhs->val > rhs->val);
+}
+
 struct Cell *eval(struct Cell *c) {
     // list
     if (c->kind == CK_LIST) {
@@ -135,6 +146,8 @@ struct Cell *eval(struct Cell *c) {
             return eval_cond(c);
         } else if (c->pkind == PK_ADD) {
             return eval_add(c);
+        } else if (c->pkind == PK_LT || c->pkind == PK_GT) {
+            return eval_lt(c);
         }
     }
 

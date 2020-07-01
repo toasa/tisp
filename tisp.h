@@ -15,6 +15,8 @@ enum TokenKind {
     TK_SYMBOL,
     TK_QUOTE,   // '
     TK_ADD,     // +
+    TK_LT,      // <
+    TK_GT,      // >
     TK_EOF,
 };
 
@@ -50,6 +52,8 @@ enum PrimKind {
     PK_CONS,
     PK_COND,
     PK_ADD,
+    PK_LT,
+    PK_GT,
 };
 
 struct Cell {

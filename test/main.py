@@ -153,5 +153,15 @@ class TestRun(unittest.TestCase):
                 ]
         self.do_tests(tests)
 
+    def test_lt(self):
+        tests = [
+                    ["(< 1 2)", "T\n"],
+                    ["(< 2 1)", "NIL\n"],
+                    ["(> 1 2)", "NIL\n"],
+                    ["(> 2 1)", "T\n"],
+                    ["(< (+ 20 30) (+ 30 40))", "T\n"],
+                ]
+        self.do_tests(tests)
+
 if __name__ == "__main__":
     unittest.main()

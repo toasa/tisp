@@ -28,6 +28,7 @@ static bool is_primitive(char *str) {
         "cdr",
         "cons",
         "cond",
+        "+",
         NULL,
     };
     for (int i = 0; primitives[i] != NULL; i++) {

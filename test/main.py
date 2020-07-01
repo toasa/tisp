@@ -139,5 +139,14 @@ class TestRun(unittest.TestCase):
                     ["(cond (1 1) (2 2))", "1\n"],
                 ]
 
+    def test_add(self):
+        tests = [
+                    ["(+ 2)", "2\n"],
+                    ["(+ 2 2)", "4\n"],
+                    ["(+ 2 2 2 2 2)", "10\n"],
+                    ["(+ (+ 20 30) (+ 30 40))", "120\n"],
+                    ["(+ '1 7)", "8\n"],
+                ]
+
 if __name__ == "__main__":
     unittest.main()

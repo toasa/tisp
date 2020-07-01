@@ -14,6 +14,7 @@ enum TokenKind {
     TK_NIL,
     TK_SYMBOL,
     TK_QUOTE,   // '
+    TK_ADD,     // +
     TK_EOF,
 };
 
@@ -48,6 +49,7 @@ enum PrimKind {
     PK_CDR,
     PK_CONS,
     PK_COND,
+    PK_ADD,
 };
 
 struct Cell {
@@ -64,6 +66,7 @@ struct Cell {
 };
 
 struct Cell *new_cell(enum CellKind kind);
+struct Cell *new_num_cell(int val);
 struct Cell *new_list_cell(struct Cell *data);
 struct Cell *gen_cell(struct Token *tokens);
 

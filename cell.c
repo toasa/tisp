@@ -13,7 +13,7 @@ static struct Cell *new_prim_cell(enum PrimKind pk) {
     return c;
 }
 
-static struct Cell *new_num_cell(int val) {
+struct Cell *new_num_cell(int val) {
     struct Cell *c = new_cell(CK_NUM);
     c->val = val;
     return c;
@@ -86,6 +86,8 @@ static struct Cell *gen_list_cells() {
                 new = new_prim_cell(PK_CONS);
             } else if (cur_token_is("cond")) {
                 new = new_prim_cell(PK_COND);
+            } else if (cur_token_is("+")) {
+                new = new_prim_cell(PK_ADD);
             }
             next_token();
         } else if (token->kind == TK_LPARENT) {

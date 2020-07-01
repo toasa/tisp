@@ -94,6 +94,18 @@ static struct Cell *eval_cond(struct Cell *c) {
     return bool_to_atom(false);
 }
 
+static struct Cell *eval_add(struct Cell *c) {
+    struct Cell *c_i = c->next;
+    int sum = 0;
+    while (c_i != NULL) {
+        struct Cell *res = eval(c_i);
+        assert(res->kind == CK_NUM, "add operand must be number");
+        sum += res->val;
+        c_i = c_i->next;
+    }
+    return new_num_cell(sum);
+}
+
 struct Cell *eval(struct Cell *c) {
     // list
     if (c->kind == CK_LIST) {
@@ -121,6 +133,8 @@ struct Cell *eval(struct Cell *c) {
             return eval_cons(c);
         } else if (c->pkind == PK_COND) {
             return eval_cond(c);
+        } else if (c->pkind == PK_ADD) {
+            return eval_add(c);
         }
     }
 

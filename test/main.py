@@ -138,9 +138,10 @@ class TestRun(unittest.TestCase):
         tests = [
                     ["(cond ((eq 1 1) 1) ((atom ()) 2))", "1\n"],
                     ["(cond ((eq 1 2) 1) ((atom ()) 2))", "2\n"],
-                    ["(cond ((eq 1 2) 1) ((atom (quote (10 20)) 2))", "NIL\n"],
+                    ["(cond ((eq 1 2) 1))", "NIL\n"],
                     ["(cond (1 1) (2 2))", "1\n"],
                 ]
+        self.do_tests(tests)
 
     def test_add(self):
         tests = [

@@ -29,6 +29,8 @@ static void print_atom(struct Cell *c) {
         printf("T");
     } else if (c->kind == CK_NIL) {
         printf("NIL");
+    } else if (c->kind == CK_SYMBOL) {
+        printf("%s", c->str);
     }
 }
 
@@ -61,6 +63,8 @@ static void print_cell(struct Cell *c) {
         print_list(c->data);
     } else if (c->kind == CK_DOT) {
         print_dot(c);
+    } else if (c->kind == CK_PRIM) {
+        printf("%s", c->str);
     } else {
         print_atom(c);
     }

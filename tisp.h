@@ -57,6 +57,7 @@ struct Cell {
     enum PrimKind pkind;
 
     int val; // kind が CK_NUM の場合に使う
+    char *str; // kind が CK_PRIM, CK_SYMBOL の場合に使う
 
     struct Cell *data; // kind が CK_LIST の場合に使う
     struct Cell *next; // リストの次要素を指す場合に使う

@@ -43,6 +43,9 @@ class TestRun(unittest.TestCase):
                     ["'T", "T\n"],
                     ["'''NIL", "''NIL\n"],
                     ["'(10 20 30)", "(10 20 30)\n"],
+                    ["'(foo bar baz)", "(foo bar baz)\n"],
+                    ["'(+ 1 2)", "(+ 1 2)\n"],
+                    ["(quote (car cdr cons))", "(car cdr cons)\n"],
                 ]
         self.do_tests(tests)
 

@@ -1,30 +1,5 @@
 #include "tisp.h"
 
-struct Cell *new_cell(enum CellKind kind) {
-    struct Cell *c = calloc(1, sizeof(struct Cell));
-    c->kind = kind;
-    return c;
-}
-
-static struct Cell *new_prim_cell(enum PrimKind pk) {
-    struct Cell *c = calloc(1, sizeof(struct Cell));
-    c->kind = CK_PRIM;
-    c->pkind = pk;
-    return c;
-}
-
-struct Cell *new_num_cell(int val) {
-    struct Cell *c = new_cell(CK_NUM);
-    c->val = val;
-    return c;
-}
-
-struct Cell *new_list_cell(struct Cell *data) {
-    struct Cell *c = new_cell(CK_LIST);
-    c->data = data;
-    return c;
-}
-
 struct Token *token;
 
 static void next_token() {
@@ -41,9 +16,35 @@ static void expect(enum TokenKind tk) {
     }
     next_token();
 }
+struct Cell *new_cell(enum CellKind kind) {
+    struct Cell *c = calloc(1, sizeof(struct Cell));
+    c->kind = kind;
+    return c;
+}
+
+static struct Cell *new_prim_cell(enum PrimKind pk) {
+    struct Cell *c = calloc(1, sizeof(struct Cell));
+    c->kind = CK_PRIM;
+    c->pkind = pk;
+    c->str = token->str;
+    return c;
+}
+
+struct Cell *new_num_cell(int val) {
+    struct Cell *c = new_cell(CK_NUM);
+    c->val = val;
+    return c;
+}
+
+struct Cell *new_list_cell(struct Cell *data) {
+    struct Cell *c = new_cell(CK_LIST);
+    c->data = data;
+    return c;
+}
 
 static bool is_atom(enum TokenKind tk) {
-    return (tk == TK_NUM) || (tk == TK_T) || (tk == TK_NIL);
+    return (tk == TK_NUM) || (tk == TK_T)
+        || (tk == TK_NIL) || (tk == TK_SYMBOL);
 }
 
 static struct Cell *gen_atom_cell() {
@@ -54,6 +55,9 @@ static struct Cell *gen_atom_cell() {
         new = new_cell(CK_T);
     } else if (token->kind == TK_NIL) {
         new = new_cell(CK_NIL);
+    } else if (token->kind == TK_SYMBOL) {
+        new = new_cell(CK_SYMBOL);
+        new->str = token->str;
     }
     return new;
 }
@@ -111,6 +115,7 @@ struct Cell *gen_cells() {
         next_token();
         cur = gen_list_cells();
     } else if (is_atom(token->kind)) {
+        // TODO? need next_token()?
         cur = gen_atom_cell();
     } else if (token->kind == TK_QUOTE) {
         next_token();

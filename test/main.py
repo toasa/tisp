@@ -163,6 +163,14 @@ class TestRun(unittest.TestCase):
                 ]
         self.do_tests(tests)
 
+    def test_length(self):
+        tests = [
+                    ["(length '(10 20 30))", "3\n"],
+                    ["(length '())", "0\n"],
+                    ["(length ''())", "2\n"],
+                ]
+        self.do_tests(tests)
+
     def test_add(self):
         tests = [
                     ["(+ 2)", "2\n"],

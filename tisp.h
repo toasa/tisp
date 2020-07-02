@@ -53,6 +53,7 @@ enum PrimKind {
     PK_COND,
     PK_APPEND,
     PK_DEFUN,
+    PK_LENGTH,
     PK_ADD,
     PK_LT,
     PK_GT,

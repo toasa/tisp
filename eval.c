@@ -199,6 +199,19 @@ static struct Cell *eval_func(struct Cell *fn, struct Cell *call) {
     return res;
 }
 
+static struct Cell *eval_length(struct Cell *c) {
+    struct Cell *list = eval_(c->next);
+    assert((list->kind == CK_LIST) || (list->kind == CK_NIL), "invalid operand of length");
+    if (list->kind == CK_NIL) {
+        return new_num_cell(0);
+    }
+    int count = 0;
+    for (struct Cell *elem = list->data; elem != NULL; elem = elem->next) {
+        count++;
+    }
+    return new_num_cell(count);
+}
+
 static struct Cell *eval_add(struct Cell *c) {
     struct Cell *c_i = c->next;
     int sum = 0;
@@ -248,6 +261,8 @@ struct Cell *eval_(struct Cell *c) {
                 return eval_append(fn);
             } else if (fn->pkind == PK_DEFUN) {
                 return eval_defun(fn);
+            } else if (fn->pkind == PK_LENGTH) {
+                return eval_length(fn);
             } else if (fn->pkind == PK_ADD) {
                 return eval_add(fn);
             } else if (fn->pkind == PK_LT || fn->pkind == PK_GT) {

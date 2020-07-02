@@ -1,5 +1,64 @@
 #include "tisp.h"
 
+struct Env *env;
+
+void init_env() {
+    env = calloc(1, sizeof(struct Env));
+};
+
+struct FuncNode *new_func_node(struct Cell *fn) {
+    struct FuncNode *f_node = calloc(1, sizeof(struct FuncNode));
+    f_node->fn = fn;
+    return f_node;
+}
+
+struct SymbolNode *new_symbol_node(struct Cell *sn) {
+    struct SymbolNode *s_node = calloc(1, sizeof(struct SymbolNode));
+    s_node->sy = sn;
+    return s_node;
+}
+
+void add_new_func(struct FuncNode *fn) {
+    fn->next = env->funcs;
+    env->funcs = fn;
+}
+
+void add_new_symbol(struct SymbolNode *sn) {
+    sn->next = env->symbols;
+    env->symbols = sn;
+}
+
+// Remove n symbols from the head of symbol list.
+void remove_symbols(int n) {
+    struct SymbolNode *s_node = env->symbols;
+    for (int i = 0; i < n; i++) {
+        s_node = s_node->next;
+    }
+    env->symbols = s_node;
+}
+
+struct Cell *look_up_symbol(char *name) {
+    struct SymbolNode *s_iter = env->symbols;
+    while (s_iter != NULL) {
+        if (equal_strings(s_iter->sy->str, name)) {
+            return s_iter->sy;
+        }
+        s_iter = s_iter->next;
+    }
+    return NULL;
+}
+
+struct Cell *look_up_func(char *name) {
+    struct FuncNode *f_iter = env->funcs;
+    while (f_iter != NULL) {
+        if (equal_strings(f_iter->fn->str, name)) {
+            return f_iter->fn;
+        }
+        f_iter = f_iter->next;
+    }
+    return NULL;
+}
+
 static struct Cell *bool_to_atom(bool b) {
     if (b) {
         return new_cell(CK_T);
@@ -18,11 +77,11 @@ static bool is_list(struct Cell *c) {
     return (c->kind == CK_LIST);
 }
 
-struct Cell *eval(struct Cell *c);
+struct Cell *eval_(struct Cell *c);
 
 static struct Cell *eval_eq(struct Cell *c) {
-    struct Cell *op1 = eval(c->next);
-    struct Cell *op2 = eval(c->next->next);
+    struct Cell *op1 = eval_(c->next);
+    struct Cell *op2 = eval_(c->next->next);
 
     if (op1->kind == CK_NUM && op2->kind == CK_NUM) {
         return bool_to_atom(op1->val == op2->val);
@@ -34,7 +93,7 @@ static struct Cell *eval_eq(struct Cell *c) {
 }
 
 static struct Cell *eval_atom(struct Cell *c) {
-    struct Cell *op = eval(c->next);
+    struct Cell *op = eval_(c->next);
     if (op->kind == CK_NUM || op->kind == CK_T || op->kind == CK_NIL) {
         return bool_to_atom(true);
     }
@@ -42,13 +101,13 @@ static struct Cell *eval_atom(struct Cell *c) {
 }
 
 struct Cell *eval_car(struct Cell *c) {
-    struct Cell *op = eval(c->next)->data;
+    struct Cell *op = eval_(c->next)->data;
     op->next = NULL;
     return op;
 }
 
 static struct Cell *eval_cdr(struct Cell *c) {
-    struct Cell *op = eval(c->next);
+    struct Cell *op = eval_(c->next);
 
     // A result of cdr for only one element list is NIL.
     if (op->data->next == NULL) {
@@ -60,8 +119,8 @@ static struct Cell *eval_cdr(struct Cell *c) {
 }
 
 static struct Cell *eval_cons(struct Cell *c) {
-    struct Cell *op1 = eval(c->next);
-    struct Cell *op2 = eval(c->next->next);
+    struct Cell *op1 = eval_(c->next);
+    struct Cell *op2 = eval_(c->next->next);
 
     if (op2->kind == CK_NIL) {
         op2 = new_list_cell(NULL);
@@ -84,7 +143,7 @@ static struct Cell *eval_cons(struct Cell *c) {
 static struct Cell *eval_cond(struct Cell *c) {
     struct Cell *c_i = c->next;
     while (c_i != NULL) {
-        struct Cell *res = eval(c_i);
+        struct Cell *res = eval_(c_i);
         if (res->kind != CK_NIL) {
             return c_i->data->next;
         }
@@ -94,8 +153,8 @@ static struct Cell *eval_cond(struct Cell *c) {
 }
 
 static struct Cell *eval_append(struct Cell *c) {
-    struct Cell *op1 = eval(c->next);
-    struct Cell *op2 = eval(c->next->next);
+    struct Cell *op1 = eval_(c->next);
+    struct Cell *op2 = eval_(c->next->next);
 
     assert(op1->kind == CK_LIST, "first operand of append must be list");
     if (is_atom(op2)) {
@@ -109,11 +168,42 @@ static struct Cell *eval_append(struct Cell *c) {
     return op1;
 }
 
+static struct Cell *eval_defun(struct Cell *c) {
+    struct Cell *fn = c->next;
+    assert(fn->kind == CK_SYMBOL, "first operand of defun must be symbol");
+    struct FuncNode *f_node = new_func_node(fn);
+    add_new_func(f_node);
+    return fn;
+}
+
+static struct Cell *eval_func(struct Cell *fn, struct Cell *call) {
+    struct Cell *formal_arg = fn->next->data;
+    struct Cell *actual_arg = call->next;
+    int args_count = 0;
+    while (formal_arg != NULL) {
+        struct Cell *arg = new_symbol_cell(formal_arg->str);
+        arg->val = actual_arg->val;
+        struct SymbolNode *arg_node = new_symbol_node(arg);
+        // tentative addition of argument symbol
+        add_new_symbol(arg_node);
+
+        args_count++;
+        formal_arg = formal_arg->next;
+        actual_arg = actual_arg->next;
+    }
+    struct Cell *func_body = fn->next->next;
+    struct Cell *res = eval_(func_body);
+
+    // remove all tentative added symbols
+    remove_symbols(args_count);
+    return res;
+}
+
 static struct Cell *eval_add(struct Cell *c) {
     struct Cell *c_i = c->next;
     int sum = 0;
     while (c_i != NULL) {
-        struct Cell *res = eval(c_i);
+        struct Cell *res = eval_(c_i);
         assert(res->kind == CK_NUM, "add operand must be number");
         sum += res->val;
         c_i = c_i->next;
@@ -123,8 +213,8 @@ static struct Cell *eval_add(struct Cell *c) {
 
 static struct Cell *eval_lt(struct Cell *c) {
     assert(c->pkind == PK_LT || c->pkind == PK_GT, "invalid lt kind");
-    struct Cell *lhs = eval(c->next);
-    struct Cell *rhs = eval(c->next->next);
+    struct Cell *lhs = eval_(c->next);
+    struct Cell *rhs = eval_(c->next->next);
     if (c->pkind == PK_LT) {
         return bool_to_atom(lhs->val < rhs->val);
     }
@@ -132,17 +222,30 @@ static struct Cell *eval_lt(struct Cell *c) {
     return bool_to_atom(lhs->val > rhs->val);
 }
 
-struct Cell *eval(struct Cell *c) {
+struct Cell *eval_(struct Cell *c) {
     // list
     if (c->kind == CK_LIST) {
-        return eval(c->data);
+        return eval_(c->data);
     }
 
     // atom
     if (c->kind == CK_NUM || c->kind == CK_T || c->kind == CK_NIL) {
         return c;
     }
-    
+
+    // TODO: function must be first element of list
+    if (c->kind == CK_SYMBOL) {
+        struct Cell *fn = look_up_func(c->str);
+        if (fn != NULL) {
+            return eval_func(fn, c);
+        }
+        struct Cell *symbol = look_up_symbol(c->str);
+        if (symbol != NULL) {
+            // TODO: result of symbol evaluation is NUMBER only (currently).
+            return new_num_cell(symbol->val);
+        }
+    }
+
     // primitive
     if (c->kind == CK_PRIM) {
         if (c->pkind == PK_QUOTE) {
@@ -161,6 +264,8 @@ struct Cell *eval(struct Cell *c) {
             return eval_cond(c);
         } else if (c->pkind == PK_APPEND) {
             return eval_append(c);
+        } else if (c->pkind == PK_DEFUN) {
+            return eval_defun(c);
         } else if (c->pkind == PK_ADD) {
             return eval_add(c);
         } else if (c->pkind == PK_LT || c->pkind == PK_GT) {
@@ -170,4 +275,14 @@ struct Cell *eval(struct Cell *c) {
 
     error("cannot evaluate");
     return NULL;
+}
+
+struct Cell *eval(struct Cell *c) {
+    struct Cell *c_iter = c;
+    struct Cell *result;
+    while (c_iter != NULL) {
+        result = eval_(c_iter);
+        c_iter = c_iter->next;
+    }
+    return result;
 }

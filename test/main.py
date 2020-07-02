@@ -152,6 +152,15 @@ class TestRun(unittest.TestCase):
                 ]
         self.do_tests(tests)
 
+    def test_defun(self):
+        tests = [
+                    ["(defun add (x y) (+ x y))", "add\n"],
+                    ["(defun add (x y) (+ x y))(add 10 20)", "30\n"],
+                    ["(defun add (x y) (+ x y))(add 10 20)(defun addThree (x y z) (+ x y z))(addThree 1 3 5)", "9\n"],
+                    ["(defun retThree () 3)(retThree)", "3\n"],
+                ]
+        self.do_tests(tests)
+
     def test_add(self):
         tests = [
                     ["(+ 2)", "2\n"],

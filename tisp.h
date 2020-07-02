@@ -52,6 +52,7 @@ enum PrimKind {
     PK_CONS,
     PK_COND,
     PK_APPEND,
+    PK_DEFUN,
     PK_ADD,
     PK_LT,
     PK_GT,
@@ -71,10 +72,27 @@ struct Cell {
     struct Cell *cdr; // kind が CK_DOT の場合に使う
 };
 
+struct FuncNode {
+    struct Cell *fn;
+    struct FuncNode *next;
+};
+
+struct SymbolNode {
+    struct Cell *sy;
+    struct SymbolNode *next;
+};
+
+struct Env {
+    struct FuncNode *funcs;
+    struct SymbolNode *symbols;
+};
+
 struct Cell *new_cell(enum CellKind kind);
 struct Cell *new_num_cell(int val);
 struct Cell *new_list_cell(struct Cell *data);
 struct Cell *new_dot_cell(struct Cell *car, struct Cell *cdr);
+struct Cell *new_symbol_cell(char *name);
+void init_env();
 struct Cell *gen_cell(struct Token *tokens);
 
 // eval.c

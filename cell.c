@@ -16,6 +16,7 @@ static void expect(enum TokenKind tk) {
     }
     next_token();
 }
+
 struct Cell *new_cell(enum CellKind kind) {
     struct Cell *c = calloc(1, sizeof(struct Cell));
     c->kind = kind;
@@ -49,6 +50,12 @@ struct Cell *new_dot_cell(struct Cell *car, struct Cell *cdr) {
     return c;
 }
 
+struct Cell *new_symbol_cell(char *name) {
+    struct Cell *c = new_cell(CK_SYMBOL);
+    c->str = name;
+    return c;
+}
+
 static bool is_atom(enum TokenKind tk) {
     return (tk == TK_NUM) || (tk == TK_T)
         || (tk == TK_NIL) || (tk == TK_SYMBOL);
@@ -65,8 +72,7 @@ static struct Cell *gen_atom_cell() {
     } else if (token->kind == TK_NIL) {
         new = new_cell(CK_NIL);
     } else if (token->kind == TK_SYMBOL) {
-        new = new_cell(CK_SYMBOL);
-        new->str = token->str;
+        new = new_symbol_cell(token->str);
     }
     return new;
 }
@@ -101,6 +107,8 @@ static struct Cell *gen_list_cells() {
                 new = new_prim_cell(PK_COND);
             } else if (cur_token_is("append")) {
                 new = new_prim_cell(PK_APPEND);
+            } else if (cur_token_is("defun")) {
+                new = new_prim_cell(PK_DEFUN);
             } else if (cur_token_is("+")) {
                 new = new_prim_cell(PK_ADD);
             } else if (cur_token_is("<")) {
@@ -145,7 +153,19 @@ struct Cell *gen_cells() {
     return cur;
 }
 
+struct Cell *gen_cell_() {
+    struct Cell head;
+    struct Cell *cur = calloc(1, sizeof(struct Cell));
+    head.next = cur;
+    while (token->kind != TK_EOF) {
+        struct Cell *new = gen_cells();
+        cur->next = new;
+        cur = new;
+    }
+    return head.next->next;
+}
+
 struct Cell *gen_cell(struct Token *tokens) {
     token = tokens;
-    return gen_cells();
+    return gen_cell_();
 }

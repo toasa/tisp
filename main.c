@@ -83,7 +83,12 @@ static void repl() {
     }
 }
 
+void init() {
+    init_env();
+}
+
 int main(int argc, char **argv) {
+    init();
     if (argc == 2) {
         // for unittest
         struct Cell *c = read_from_stdin(argv[1]);

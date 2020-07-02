@@ -143,7 +143,7 @@ static struct Cell *eval_cons(struct Cell *c) {
 static struct Cell *eval_cond(struct Cell *c) {
     struct Cell *c_i = c->next;
     while (c_i != NULL) {
-        struct Cell *res = eval_(c_i);
+        struct Cell *res = eval_(c_i->data);
         if (res->kind != CK_NIL) {
             return c_i->data->next;
         }
@@ -225,7 +225,43 @@ static struct Cell *eval_lt(struct Cell *c) {
 struct Cell *eval_(struct Cell *c) {
     // list
     if (c->kind == CK_LIST) {
-        return eval_(c->data);
+        // the head of list is function.
+        struct Cell *fn = c->data;
+
+        // primitive
+        if (fn->kind == CK_PRIM) {
+            if (fn->pkind == PK_QUOTE) {
+                return fn->next;
+            } else if (fn->pkind == PK_EQ) {
+                return eval_eq(fn);
+            } else if (fn->pkind == PK_ATOM) {
+                return eval_atom(fn);
+            } else if (fn->pkind == PK_CAR) {
+                return eval_car(fn);
+            } else if (fn->pkind == PK_CDR) {
+                return eval_cdr(fn);
+            } else if (fn->pkind == PK_CONS) {
+                return eval_cons(fn);
+            } else if (fn->pkind == PK_COND) {
+                return eval_cond(fn);
+            } else if (fn->pkind == PK_APPEND) {
+                return eval_append(fn);
+            } else if (fn->pkind == PK_DEFUN) {
+                return eval_defun(fn);
+            } else if (fn->pkind == PK_ADD) {
+                return eval_add(fn);
+            } else if (fn->pkind == PK_LT || fn->pkind == PK_GT) {
+                return eval_lt(fn);
+            }
+        }
+
+        if (fn->kind == CK_SYMBOL) {
+            struct Cell *defined_fn = look_up_func(fn->str);
+            if (defined_fn != NULL) {
+                return eval_func(defined_fn, fn);
+            }
+        }
+        error("invalid function called: %s", fn->str);
     }
 
     // atom
@@ -233,43 +269,11 @@ struct Cell *eval_(struct Cell *c) {
         return c;
     }
 
-    // TODO: function must be first element of list
     if (c->kind == CK_SYMBOL) {
-        struct Cell *fn = look_up_func(c->str);
-        if (fn != NULL) {
-            return eval_func(fn, c);
-        }
         struct Cell *symbol = look_up_symbol(c->str);
         if (symbol != NULL) {
             // TODO: result of symbol evaluation is NUMBER only (currently).
             return new_num_cell(symbol->val);
-        }
-    }
-
-    // primitive
-    if (c->kind == CK_PRIM) {
-        if (c->pkind == PK_QUOTE) {
-            return c->next;
-        } else if (c->pkind == PK_EQ) {
-            return eval_eq(c);
-        } else if (c->pkind == PK_ATOM) {
-            return eval_atom(c);
-        } else if (c->pkind == PK_CAR) {
-            return eval_car(c);
-        } else if (c->pkind == PK_CDR) {
-            return eval_cdr(c);
-        } else if (c->pkind == PK_CONS) {
-            return eval_cons(c);
-        } else if (c->pkind == PK_COND) {
-            return eval_cond(c);
-        } else if (c->pkind == PK_APPEND) {
-            return eval_append(c);
-        } else if (c->pkind == PK_DEFUN) {
-            return eval_defun(c);
-        } else if (c->pkind == PK_ADD) {
-            return eval_add(c);
-        } else if (c->pkind == PK_LT || c->pkind == PK_GT) {
-            return eval_lt(c);
         }
     }
 

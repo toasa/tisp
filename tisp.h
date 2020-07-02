@@ -51,6 +51,7 @@ enum PrimKind {
     PK_CDR,
     PK_CONS,
     PK_COND,
+    PK_APPEND,
     PK_ADD,
     PK_LT,
     PK_GT,
@@ -73,6 +74,7 @@ struct Cell {
 struct Cell *new_cell(enum CellKind kind);
 struct Cell *new_num_cell(int val);
 struct Cell *new_list_cell(struct Cell *data);
+struct Cell *new_dot_cell(struct Cell *car, struct Cell *cdr);
 struct Cell *gen_cell(struct Token *tokens);
 
 // eval.c

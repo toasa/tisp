@@ -42,6 +42,13 @@ struct Cell *new_list_cell(struct Cell *data) {
     return c;
 }
 
+struct Cell *new_dot_cell(struct Cell *car, struct Cell *cdr) {
+    struct Cell *c = new_cell(CK_DOT);
+    c->car = car;
+    c->cdr = cdr;
+    return c;
+}
+
 static bool is_atom(enum TokenKind tk) {
     return (tk == TK_NUM) || (tk == TK_T)
         || (tk == TK_NIL) || (tk == TK_SYMBOL);
@@ -92,6 +99,8 @@ static struct Cell *gen_list_cells() {
                 new = new_prim_cell(PK_CONS);
             } else if (cur_token_is("cond")) {
                 new = new_prim_cell(PK_COND);
+            } else if (cur_token_is("append")) {
+                new = new_prim_cell(PK_APPEND);
             } else if (cur_token_is("+")) {
                 new = new_prim_cell(PK_ADD);
             } else if (cur_token_is("<")) {

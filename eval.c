@@ -10,7 +10,8 @@ static struct Cell *bool_to_atom(bool b) {
 static bool is_atom(struct Cell *c) {
     return (c->kind == CK_NUM)
         || (c->kind == CK_T)
-        || (c->kind == CK_NIL);
+        || (c->kind == CK_NIL)
+        || (c->kind == CK_SYMBOL);
 }
 
 static bool is_list(struct Cell *c) {
@@ -76,9 +77,7 @@ static struct Cell *eval_cons(struct Cell *c) {
     }
 
     // dotted pair
-    struct Cell *dot = new_cell(CK_DOT);
-    dot->car = op1;
-    dot->cdr = op2;
+    struct Cell *dot = new_dot_cell(op1, op2);
     return dot;
 }
 
@@ -92,6 +91,22 @@ static struct Cell *eval_cond(struct Cell *c) {
         c_i = c_i->next;
     }
     return bool_to_atom(false);
+}
+
+static struct Cell *eval_append(struct Cell *c) {
+    struct Cell *op1 = eval(c->next);
+    struct Cell *op2 = eval(c->next->next);
+
+    assert(op1->kind == CK_LIST, "first operand of append must be list");
+    if (is_atom(op2)) {
+        return new_dot_cell(op1, op2);
+    }
+    struct Cell *op1_tail = op1->data;
+    while (op1_tail->next != NULL) {
+        op1_tail = op1_tail->next;
+    }
+    op1_tail->next = op2->data;
+    return op1;
 }
 
 static struct Cell *eval_add(struct Cell *c) {
@@ -144,6 +159,8 @@ struct Cell *eval(struct Cell *c) {
             return eval_cons(c);
         } else if (c->pkind == PK_COND) {
             return eval_cond(c);
+        } else if (c->pkind == PK_APPEND) {
+            return eval_append(c);
         } else if (c->pkind == PK_ADD) {
             return eval_add(c);
         } else if (c->pkind == PK_LT || c->pkind == PK_GT) {

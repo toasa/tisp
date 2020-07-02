@@ -143,6 +143,15 @@ class TestRun(unittest.TestCase):
                 ]
         self.do_tests(tests)
 
+    def test_append(self):
+        tests = [
+                    ["(append '(1 2) '(3 4))", "(1 2 3 4)\n"],
+                    # TODO: print bug
+                    # ["(append '(1 2) 3)", "(1 2 . 3)\n"],
+                    # ["(append '(1 2 3) 'foo)", "(1 2 3 . foo)\n"],
+                ]
+        self.do_tests(tests)
+
     def test_add(self):
         tests = [
                     ["(+ 2)", "2\n"],

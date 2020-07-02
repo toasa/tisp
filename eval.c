@@ -182,7 +182,7 @@ static struct Cell *eval_func(struct Cell *fn, struct Cell *call) {
     int args_count = 0;
     while (formal_arg != NULL) {
         struct Cell *arg = new_symbol_cell(formal_arg->str);
-        arg->val = actual_arg->val;
+        arg->val = eval_(actual_arg)->val;
         struct SymbolNode *arg_node = new_symbol_node(arg);
         // tentative addition of argument symbol
         add_new_symbol(arg_node);

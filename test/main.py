@@ -160,6 +160,7 @@ class TestRun(unittest.TestCase):
                     ["(defun retThree () 3)(retThree)", "3\n"],
                     ["(defun add (x y) (+ x y))(add (+ 10 10) 20)", "40\n"],
                     ["(defun add (x y) (+ x y))(defun addThree (x y z) (+ x y z))(addThree (add 1 2) (add 3 4) (add 5 6))", "21\n"],
+                    ["(defun fibo (n) (if (< n 3) 1 (+ (fibo (- n 1)) (fibo (- n 2)))))(fibo 10)", "55\n"],
                 ]
         self.do_tests(tests)
 

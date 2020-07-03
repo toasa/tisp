@@ -238,6 +238,17 @@ static struct Cell *eval_list(struct Cell *c) {
     return new_list_cell(head.next->next);
 }
 
+static struct Cell *eval_setq(struct Cell *c) {
+    struct Cell *sym = c->next;
+    assert(sym->kind == CK_SYMBOL, "first operand of setq must be symbol");
+    struct Cell *val = eval_(sym->next);
+    // TODO: handle a type other than number.
+    sym->val = val->val;
+    struct SymbolNode *s_node = new_symbol_node(sym);
+    add_new_symbol(s_node);
+    return val;
+}
+
 static struct Cell *eval_add(struct Cell *c) {
     struct Cell *c_i = c->next;
     int sum = 0;
@@ -322,6 +333,8 @@ struct Cell *eval_(struct Cell *c) {
                 return eval_if(fn);
             } else if (fn->pkind == PK_LIST) {
                 return eval_list(fn);
+            } else if (fn->pkind == PK_SETQ) {
+                return eval_setq(fn);
             } else if (fn->pkind == PK_ADD) {
                 return eval_add(fn);
             } else if (fn->pkind == PK_SUB) {

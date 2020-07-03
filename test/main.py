@@ -192,6 +192,15 @@ class TestRun(unittest.TestCase):
                 ]
         self.do_tests(tests)
 
+    def test_setq(self):
+        tests = [
+                    ["(setq x 5)", "5\n"],
+                    ["(setq x 5) x", "5\n"],
+                    ["(setq x (+ 10 20)) x", "30\n"],
+                    ["(setq x 1)(defun inc () (+ x 1))(inc)", "2\n"],
+                ]
+        self.do_tests(tests)
+
     def test_add(self):
         tests = [
                     ["(+ 2)", "2\n"],

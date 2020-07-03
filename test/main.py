@@ -189,6 +189,13 @@ class TestRun(unittest.TestCase):
                 ]
         self.do_tests(tests)
 
+    def test_mul(self):
+        tests = [
+                    ["(* 3 5)", "15\n"],
+                    ["(+ (* 2 10 10 10) 20)", "2020\n"],
+                ]
+        self.do_tests(tests)
+
     def test_lt(self):
         tests = [
                     ["(< 1 2)", "T\n"],

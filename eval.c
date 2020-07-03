@@ -241,6 +241,18 @@ static struct Cell *eval_sub(struct Cell *c) {
     return new_num_cell(diff);
 }
 
+static struct Cell *eval_mul(struct Cell *c) {
+    struct Cell *c_i = c->next;
+    int mul = 1;
+    while (c_i != NULL) {
+        struct Cell *res = eval_(c_i);
+        assert(res->kind == CK_NUM, "add operand must be number");
+        mul *= res->val;
+        c_i = c_i->next;
+    }
+    return new_num_cell(mul);
+}
+
 static struct Cell *eval_lt(struct Cell *c) {
     assert(c->pkind == PK_LT || c->pkind == PK_GT, "invalid lt kind");
     struct Cell *lhs = eval_(c->next);
@@ -284,6 +296,8 @@ struct Cell *eval_(struct Cell *c) {
                 return eval_add(fn);
             } else if (fn->pkind == PK_SUB) {
                 return eval_sub(fn);
+            } else if (fn->pkind == PK_MUL) {
+                return eval_mul(fn);
             } else if (fn->pkind == PK_LT || fn->pkind == PK_GT) {
                 return eval_lt(fn);
             }

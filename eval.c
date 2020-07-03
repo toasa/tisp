@@ -223,6 +223,21 @@ static struct Cell *eval_if(struct Cell *c) {
     return eval_(c->next->next);
 }
 
+static struct Cell *eval_list(struct Cell *c) {
+    if (c->next == NULL) {
+        return bool_to_atom(false);
+    }
+    struct Cell head;
+    struct Cell *cur = calloc(1, sizeof(struct Cell));
+    head.next = cur;
+    for (struct Cell *c_i = c->next; c_i != NULL; c_i = c_i->next) {
+        struct Cell *tmp = eval_(c_i);
+        cur->next = tmp;
+        cur = tmp;
+    }
+    return new_list_cell(head.next->next);
+}
+
 static struct Cell *eval_add(struct Cell *c) {
     struct Cell *c_i = c->next;
     int sum = 0;
@@ -305,6 +320,8 @@ struct Cell *eval_(struct Cell *c) {
                 return eval_length(fn);
             } else if (fn->pkind == PK_IF) {
                 return eval_if(fn);
+            } else if (fn->pkind == PK_LIST) {
+                return eval_list(fn);
             } else if (fn->pkind == PK_ADD) {
                 return eval_add(fn);
             } else if (fn->pkind == PK_SUB) {

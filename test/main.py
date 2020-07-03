@@ -182,6 +182,15 @@ class TestRun(unittest.TestCase):
                 ]
         self.do_tests(tests)
 
+    def test_list(self):
+        tests = [
+                    ["(list 2 3 4)", "(2 3 4)\n"],
+                    ["(list (+ 2 3) 4)", "(5 4)\n"],
+                    ["(list 2 3 4 NIL '(1 2 3))", "(2 3 4 NIL (1 2 3))\n"],
+                    ["(list)", "NIL\n"],
+                ]
+        self.do_tests(tests)
+
     def test_add(self):
         tests = [
                     ["(+ 2)", "2\n"],

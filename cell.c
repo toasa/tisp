@@ -113,6 +113,8 @@ static struct Cell *gen_list_cells() {
                 new = new_prim_cell(PK_LENGTH);
             } else if (cur_token_is("if")) {
                 new = new_prim_cell(PK_IF);
+            } else if (cur_token_is("list")) {
+                new = new_prim_cell(PK_LIST);
             } else if (cur_token_is("+")) {
                 new = new_prim_cell(PK_ADD);
             } else if (cur_token_is("-")) {

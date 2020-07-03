@@ -212,6 +212,17 @@ static struct Cell *eval_length(struct Cell *c) {
     return new_num_cell(count);
 }
 
+static struct Cell *eval_if(struct Cell *c) {
+    struct Cell *cond = eval_(c->next);
+    if (cond->kind == CK_NIL) {
+        if (c->next->next->next == NULL) {
+            return bool_to_atom(false);
+        }
+        return eval_(c->next->next->next);
+    }
+    return eval_(c->next->next);
+}
+
 static struct Cell *eval_add(struct Cell *c) {
     struct Cell *c_i = c->next;
     int sum = 0;
@@ -292,6 +303,8 @@ struct Cell *eval_(struct Cell *c) {
                 return eval_defun(fn);
             } else if (fn->pkind == PK_LENGTH) {
                 return eval_length(fn);
+            } else if (fn->pkind == PK_IF) {
+                return eval_if(fn);
             } else if (fn->pkind == PK_ADD) {
                 return eval_add(fn);
             } else if (fn->pkind == PK_SUB) {

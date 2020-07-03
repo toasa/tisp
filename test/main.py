@@ -171,6 +171,17 @@ class TestRun(unittest.TestCase):
                 ]
         self.do_tests(tests)
 
+    def test_if(self):
+        tests = [
+                    ["(if T 3 4)", "3\n"],
+                    ["(if NIL 3 4)", "4\n"],
+                    ["(if (eq (+ 1 2) 3) 'true 'false)", "true\n"],
+                    ["(if (eq (+ 1 2) 5) 'true 'false)", "false\n"],
+                    ["(if T 3)", "3\n"],
+                    ["(if NIL 3)", "NIL\n"],
+                ]
+        self.do_tests(tests)
+
     def test_add(self):
         tests = [
                     ["(+ 2)", "2\n"],

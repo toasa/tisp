@@ -31,6 +31,7 @@ static bool is_primitive(char *str) {
         "append",
         "defun",
         "length",
+        "if",
         "+",
         "-",
         "<",

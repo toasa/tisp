@@ -181,6 +181,14 @@ class TestRun(unittest.TestCase):
                 ]
         self.do_tests(tests)
 
+    def test_sub(self):
+        tests = [
+                    ["(- 10)", "-10\n"],
+                    ["(- 10 20 30 60)", "-100\n"],
+                    ["(- (+ 10 20) (- 10 40))", "60\n"],
+                ]
+        self.do_tests(tests)
+
     def test_lt(self):
         tests = [
                     ["(< 1 2)", "T\n"],

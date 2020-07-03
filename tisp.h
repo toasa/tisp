@@ -14,9 +14,6 @@ enum TokenKind {
     TK_NIL,
     TK_SYMBOL,
     TK_QUOTE,   // '
-    TK_ADD,     // +
-    TK_LT,      // <
-    TK_GT,      // >
     TK_EOF,
 };
 

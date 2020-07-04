@@ -131,6 +131,8 @@ static struct Cell *gen_list_cells() {
                 new = new_prim_cell(PK_LT);
             } else if (cur_token_is(">")) {
                 new = new_prim_cell(PK_GT);
+            } else if (cur_token_is("=")) {
+                new = new_prim_cell(PK_EQ);
             }
             next_token();
         } else if (token->kind == TK_LPARENT) {

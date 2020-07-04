@@ -110,6 +110,8 @@ struct Token *tokenize(char *input) {
             cur = new_str_token(cur, TK_PRIM, "<");
         } else if (input[i] == '>') {
             cur = new_str_token(cur, TK_PRIM, ">");
+        } else if (input[i] == '=') {
+            cur = new_str_token(cur, TK_PRIM, "=");
         } else if (input[i] == ' ') {
             // skip
         }

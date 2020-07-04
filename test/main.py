@@ -81,6 +81,9 @@ class TestRun(unittest.TestCase):
                     ["(eq () ())", "T\n"],
                     ["(eq (quote (10 20 30)) (quote (10 20 30)))", "NIL\n"],
                     ["(eq (quote (10 20 30)) (quote (11 22 33)))", "NIL\n"],
+                    ["(= 10 10)", "T\n"],
+                    ["(= 10 15)", "NIL\n"],
+                    ["(= (+ 1 2 3) (* 1 2 3))", "T\n"],
                 ]
         self.do_tests(tests)
 

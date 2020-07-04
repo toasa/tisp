@@ -42,7 +42,7 @@ enum CellKind {
 enum PrimKind {
     PK_NONE,
     PK_QUOTE,
-    PK_EQ,
+    PK_EQ,     // Both 'eq' and '=' primitives have the same kind, 'PK_EQ'.
     PK_ATOM,
     PK_CAR,
     PK_CDR,

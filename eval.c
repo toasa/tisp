@@ -305,6 +305,12 @@ static struct Cell *eval_div(struct Cell *c) {
     return new_num_cell(quot);
 }
 
+static struct Cell *eval_mod(struct Cell *c) {
+    struct Cell *op1 = eval_(c->next);
+    struct Cell *op2 = eval_(c->next->next);
+    return new_num_cell(op1->val % op2->val);
+}
+
 static struct Cell *eval_lt(struct Cell *c) {
     assert(c->pkind == PK_LT || c->pkind == PK_GT, "invalid lt kind");
     struct Cell *lhs = eval_(c->next);
@@ -358,6 +364,8 @@ struct Cell *eval_(struct Cell *c) {
                 return eval_mul(fn);
             } else if (fn->pkind == PK_DIV) {
                 return eval_div(fn);
+            } else if (fn->pkind == PK_MOD) {
+                return eval_mod(fn);
             } else if (fn->pkind == PK_LT || fn->pkind == PK_GT) {
                 return eval_lt(fn);
             }

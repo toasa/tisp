@@ -241,6 +241,15 @@ class TestRun(unittest.TestCase):
                 ]
         self.do_tests(tests)
 
+    def test_mod(self):
+        tests = [
+                    ["(mod 10 2)", "0\n"],
+                    ["(mod 7 3)", "1\n"],
+                    ["(mod (+ 10 3) (- 10 7))", "1\n"],
+                    ["(mod 10 100)", "10\n"],
+                ]
+        self.do_tests(tests)
+
     def test_lt(self):
         tests = [
                     ["(< 1 2)", "T\n"],

@@ -19,6 +19,8 @@ static struct Token *new_str_token(struct Token *prev, enum TokenKind kind, char
     return t;
 }
 
+// Following primitives is only alphabetical.
+// Non-alphabetic primitives, for example '+', are covered by tokenize().
 static bool is_primitive(char *str) {
     char *primitives[] = {
         "quote",
@@ -34,10 +36,7 @@ static bool is_primitive(char *str) {
         "if",
         "list",
         "setq",
-        "+",
-        "-",
-        "<",
-        ">",
+        "mod",
         NULL,
     };
     for (int i = 0; primitives[i] != NULL; i++) {

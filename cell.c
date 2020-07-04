@@ -125,6 +125,8 @@ static struct Cell *gen_list_cells() {
                 new = new_prim_cell(PK_MUL);
             } else if (cur_token_is("/")) {
                 new = new_prim_cell(PK_DIV);
+            } else if (cur_token_is("mod")) {
+                new = new_prim_cell(PK_MOD);
             } else if (cur_token_is("<")) {
                 new = new_prim_cell(PK_LT);
             } else if (cur_token_is(">")) {

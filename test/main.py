@@ -138,6 +138,7 @@ class TestRun(unittest.TestCase):
         tests = [
                     ["(cond ((eq 1 1) 1) ((atom ()) 2))", "1\n"],
                     ["(cond ((eq 1 2) 1) ((atom ()) 2))", "2\n"],
+                    ["(cond ((eq 1 2) (* 2 3 4)) ((atom ()) (* 5 6 7)))", "210\n"],
                     ["(cond ((eq 1 2) 1))", "NIL\n"],
                     ["(cond (1 1) (2 2))", "1\n"],
                 ]

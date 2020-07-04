@@ -145,7 +145,7 @@ static struct Cell *eval_cond(struct Cell *c) {
     while (c_i != NULL) {
         struct Cell *res = eval_(c_i->data);
         if (res->kind != CK_NIL) {
-            return c_i->data->next;
+            return eval_(c_i->data->next);
         }
         c_i = c_i->next;
     }

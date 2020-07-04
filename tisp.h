@@ -73,6 +73,8 @@ struct Cell {
 
     struct Cell *car; // kind が CK_DOT の場合に使う
     struct Cell *cdr; // kind が CK_DOT の場合に使う
+
+    struct Cell *binded_cell; // kind が CK_SYMBOL の場合に使う
 };
 
 struct FuncNode {

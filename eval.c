@@ -182,7 +182,7 @@ static struct Cell *eval_func(struct Cell *fn, struct Cell *call) {
     int args_count = 0;
     while (formal_arg != NULL) {
         struct Cell *arg = new_symbol_cell(formal_arg->str);
-        arg->val = eval_(actual_arg)->val;
+        arg->binded_cell = eval_(actual_arg);
         struct SymbolNode *arg_node = new_symbol_node(arg);
         // tentative addition of argument symbol
         add_new_symbol(arg_node);
@@ -239,14 +239,12 @@ static struct Cell *eval_list(struct Cell *c) {
 }
 
 static struct Cell *eval_setq(struct Cell *c) {
-    struct Cell *sym = c->next;
-    assert(sym->kind == CK_SYMBOL, "first operand of setq must be symbol");
-    struct Cell *val = eval_(sym->next);
-    // TODO: handle a type other than number.
-    sym->val = val->val;
+    assert(c->next->kind == CK_SYMBOL, "first operand of setq must be symbol");
+    struct Cell *sym = new_symbol_cell(c->next->str);
+    sym->binded_cell = eval_(c->next->next);
     struct SymbolNode *s_node = new_symbol_node(sym);
     add_new_symbol(s_node);
-    return val;
+    return sym->binded_cell;
 }
 
 static struct Cell *eval_add(struct Cell *c) {
@@ -363,8 +361,7 @@ struct Cell *eval_(struct Cell *c) {
     if (c->kind == CK_SYMBOL) {
         struct Cell *symbol = look_up_symbol(c->str);
         if (symbol != NULL) {
-            // TODO: result of symbol evaluation is NUMBER only (currently).
-            return new_num_cell(symbol->val);
+            return symbol->binded_cell;
         }
     }
 

@@ -160,6 +160,11 @@ class TestRun(unittest.TestCase):
                     ["(defun retThree () 3)(retThree)", "3\n"],
                     ["(defun add (x y) (+ x y))(add (+ 10 10) 20)", "40\n"],
                     ["(defun add (x y) (+ x y))(defun addThree (x y z) (+ x y z))(addThree (add 1 2) (add 3 4) (add 5 6))", "21\n"],
+                    ["(defun bool (b) (if b 10 20))(bool T)", "10\n"],
+                    ["(defun bool (b) (if b 10 20))(bool NIL)", "20\n"],
+                    ["(setq x 10)(defun f (x) (+ x 1))(f 10)x", "10\n"],
+                    ["(setq x 10)(defun f (x) (+ x 1))x(f 10)", "11\n"],
+                    ["(setq x 10)(defun inc () (setq x (+ x 1)))(inc)(inc)(inc)x", "13\n"],
                     ["(defun fibo (n) (if (< n 3) 1 (+ (fibo (- n 1)) (fibo (- n 2)))))(fibo 10)", "55\n"],
                 ]
         self.do_tests(tests)
@@ -196,6 +201,7 @@ class TestRun(unittest.TestCase):
         tests = [
                     ["(setq x 5)", "5\n"],
                     ["(setq x 5) x", "5\n"],
+                    ["(setq x T) x", "T\n"],
                     ["(setq x (+ 10 20)) x", "30\n"],
                     ["(setq x 1)(defun inc () (+ x 1))(inc)", "2\n"],
                 ]

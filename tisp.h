@@ -57,6 +57,7 @@ enum PrimKind {
     PK_ADD,
     PK_SUB,
     PK_MUL,
+    PK_DIV,
     PK_LT,
     PK_GT,
 };

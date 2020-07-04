@@ -232,6 +232,15 @@ class TestRun(unittest.TestCase):
                 ]
         self.do_tests(tests)
 
+    def test_div(self):
+        tests = [
+                    ["(/ 10 2)", "5\n"],
+                    ["(/ (+ 10 2) (* 3 2))", "2\n"],
+                    ["(/ 100 2 2 5)", "5\n"],
+                    ["(/ 5)", "0\n"],
+                ]
+        self.do_tests(tests)
+
     def test_lt(self):
         tests = [
                     ["(< 1 2)", "T\n"],

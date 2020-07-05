@@ -1,46 +1,27 @@
 # tisp
 
 Lisp interpreter written in C.
-The tisp supports following primitives:
 
-- `quote`
-- `atom`
-- `eq`
-- `car`
-- `cdr`
-- `cons`
-- `cond`
-- `list`
-- `append`
-- `defun`
-- `setq`
-- `if`
-- `length`
+## REPL
 
-And also supports the following arithmetic operators:
-
-- `+`
-- `-`
-- `*`
-- `/`
-- `mod`
-- `>`
-- `<`
-
-## Run REPL
+You can run REPL by running
 
 ```
 $ make run
 ```
 
+on top of the source tree.
+
 ## Test
 
-You can do unittests defined in `test/main.py`.
-If you want to do, run the following command.
+You can do all unittests by running 
 
 ```
 $ make test
 ```
+
+on top of the source tree.
+The unittests are defined in `test/main.py`.
 
 ## Requirement
 

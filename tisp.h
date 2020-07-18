@@ -20,10 +20,8 @@ enum TokenKind {
 struct Token {
     enum TokenKind kind;
     struct Token *next;
-
-    int val; // kind が TK_NUM の場合に使う
-
-    char *str; // king が TK_PRIM, TK_SYMBOL の場合に使う
+    int val;   // kind が TK_NUM の場合に使う
+    char *str; // kind が TK_PRIM, TK_SYMBOL の場合に使う
 };
 
 struct Token *tokenize(char *input);

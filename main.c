@@ -75,26 +75,22 @@ static void print(struct Cell *c) {
     printf("\n");
 }
 
-static void repl() {
+static void repl(struct Env *g_env) {
     while (1) {
         struct Cell *c = read();
-        c = eval(c);
+        c = eval(c, g_env);
         print(c);
     }
 }
 
-void init() {
-    init_env();
-}
-
 int main(int argc, char **argv) {
-    init();
+    struct Env *g_env = new_env();
     if (argc == 2) {
         // for unittest
         struct Cell *c = read_from_stdin(argv[1]);
-        c = eval(c);
+        c = eval(c, g_env);
         print(c);
     } else {
-        repl();
+        repl(g_env);
     }
 }

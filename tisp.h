@@ -65,7 +65,7 @@ struct Cell {
     enum CellKind kind;
     enum PrimKind pkind;
 
-    int val; // kind が CK_NUM の場合に使う
+    int val;   // kind が CK_NUM の場合に使う
     char *str; // kind が CK_PRIM, CK_SYMBOL の場合に使う
 
     struct Cell *data; // kind が CK_LIST の場合に使う
@@ -77,19 +77,14 @@ struct Cell {
     struct Cell *binded_cell; // kind が CK_SYMBOL の場合に使う
 };
 
-struct FuncNode {
-    struct Cell *fn;
-    struct FuncNode *next;
-};
-
-struct SymbolNode {
-    struct Cell *sy;
-    struct SymbolNode *next;
+struct VarNode {
+    struct Cell *var;
+    struct VarNode *next;
 };
 
 struct Env {
-    struct FuncNode *funcs;
-    struct SymbolNode *symbols;
+    struct Env *up;
+    struct VarNode *vars;
 };
 
 struct Cell *new_cell(enum CellKind kind);
@@ -97,11 +92,11 @@ struct Cell *new_num_cell(int val);
 struct Cell *new_list_cell(struct Cell *data);
 struct Cell *new_dot_cell(struct Cell *car, struct Cell *cdr);
 struct Cell *new_symbol_cell(char *name);
-void init_env();
 struct Cell *gen_cell(struct Token *tokens);
 
 // eval.c
-struct Cell *eval(struct Cell *c);
+struct Env *new_env();
+struct Cell *eval(struct Cell *c, struct Env *g_env);
 
 // util.c
 bool is_integer(char c);

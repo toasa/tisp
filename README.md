@@ -2,6 +2,18 @@
 
 Lisp interpreter written in C.
 
+## DEMO
+
+By REPL, compute the 10th term of the Fibonacci sequence:
+
+```bash
+$ make run
+tisp> (defun fibo (n) (if (< n 3) 1 (+ (fibo (- n 1)) (fibo (- n 2)))))         
+fibo
+tisp> (fibo 10)
+55
+```
+
 ## REPL
 
 You can run REPL by running
